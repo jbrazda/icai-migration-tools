@@ -162,7 +162,7 @@
         <echo level="info">target: ${transform.target.dir}</echo>
         <echo level="info">include: ${ipd.migrate.processes.to.agent.include}</echo>
         <echo level="info">exclude: ${ipd.migrate.processes.to.agent.exclude}</echo>
-        <xslt style="${basedir}/xsl/move_service_to_agent.xsl" 
+        <xslt style="${xsl.scripts.base}/move_service_to_agent.xsl" 
             basedir="${transform.source.dir}"
             includes="${ipd.migrate.processes.to.agent.include}"
             excludes="${ipd.migrate.processes.to.agent.exclude}"
@@ -186,7 +186,7 @@
         <echo level="info">target: ${transform.target.dir}</echo>
         <echo level="info">include: ${ipd.migrate.processes.to.cloud.include}</echo>
         <echo level="info">exclude: ${ipd.migrate.processes.to.cloud.exclude}</echo>
-        <xslt style="${basedir}/xsl/move_service_to_cloud.xsl" 
+        <xslt style="${xsl.scripts.base}/move_service_to_cloud.xsl" 
             basedir="${transform.source.dir}"
             includes="${ipd.migrate.processes.to.cloud.include}"
             excludes="${ipd.migrate.processes.to.cloud.exclude}"
@@ -330,7 +330,7 @@
         <property name="ipd.tags.remove.tagMatchPattern" value="(,)?(GIT:\w+)"/>
         <echo level="info">include: ${ipd.tags.remove.include}</echo>
         <echo level="info">exclude: ${ipd.tags.remove.exclude}</echo>
-        <xslt style="${basedir}/xsl/remove_tags.xsl" 
+        <xslt style="${xsl.scripts.base}/remove_tags.xsl" 
             basedir="${transform.source.dir}"
             includes="${ipd.tags.remove.include}"
             excludes="${ipd.tags.remove.exclude}"
@@ -354,7 +354,7 @@
         <property name="transform.target.dir" location="${basedir}/target/test-move-to-agent"/>
         <property name="targetLocation" value="TEST_1"/>
         <mkdir dir="${transform.target.dir}"/>        
-        <xslt style="${basedir}/xsl/move_service_to_agent.xsl" 
+        <xslt style="${xsl.scripts.base}/move_service_to_agent.xsl" 
             basedir="${transform.source.dir}" 
             destdir="${transform.target.dir}"
             includes="**/*.pd.xml,**/*.PROCESS.xml"
@@ -370,7 +370,7 @@
         <property name="transform.source.dir" location="${basedir}/sample-data/src"/>
         <property name="transform.target.dir" location="${basedir}/target/test-move-to-cloud"/>
         <mkdir dir="${transform.target.dir}"/>        
-        <xslt style="${basedir}/xsl/move_service_to_cloud.xsl" 
+        <xslt style="${xsl.scripts.base}/move_service_to_cloud.xsl" 
             basedir="${transform.source.dir}" 
             destdir="${transform.target.dir}"
             includes="**/*.pd.xml,**/*.PROCESS.xml"
@@ -386,7 +386,7 @@
         <property name="transform.target.dir" location="${basedir}/target/test-set-tracingLevel"/>
         <property name="service.tracingLevel" value="none"/>
         <mkdir dir="${transform.target.dir}"/>        
-        <xslt style="${basedir}/xsl/set_service_tracingLevel.xsl" 
+        <xslt style="${xsl.scripts.base}/set_service_tracingLevel.xsl" 
             basedir="${transform.source.dir}" 
             destdir="${transform.target.dir}"
             includes="**/*.pd.xml,**/*.PROCESS.xml"
@@ -404,7 +404,7 @@
         <property name="service.suspendOnFault" value="true"/>
 
         <mkdir dir="${transform.target.dir}"/>        
-        <xslt style="${basedir}/xsl/set_service_suspendOnFault.xsl" 
+        <xslt style="${xsl.scripts.base}/set_service_suspendOnFault.xsl" 
             basedir="${transform.source.dir}" 
             destdir="${transform.target.dir}"
             includes="**/*.pd.xml,**/*.PROCESS.xml"
@@ -457,7 +457,7 @@
             <echo level="info">****** excludes:     ${ipd.migrate.processes.tracingLevelUpdate.@{tracingLevel}.excludes}</echo>
             <echo level="info">****** tracingLevel: @{tracingLevel}</echo>     
             <echo level="info">****** properties:   @{properties}</echo>     
-            <xslt style="${basedir}/xsl/set_service_tracingLevel.xsl" 
+            <xslt style="${xsl.scripts.base}/set_service_tracingLevel.xsl" 
                 basedir="@{sourceDir}" 
                 destdir="@{targetDir}"
                 includes="${ipd.migrate.processes.tracingLevelUpdate.@{tracingLevel}.includes}"
@@ -489,7 +489,7 @@
             <echo level="info">****** includes:     @{includes}</echo>
             <echo level="info">****** excludes:     @{excludes}</echo>
             <echo level="info">****** suspendOnFault: @{suspendOnFault}</echo>         
-            <xslt style="${basedir}/xsl/set_service_suspendOnFault.xsl" 
+            <xslt style="${xsl.scripts.base}/set_service_suspendOnFault.xsl" 
                 basedir="@{sourceDir}" 
                 destdir="@{targetDir}"
                 includes="@{includes}"
