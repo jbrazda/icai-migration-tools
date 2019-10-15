@@ -124,7 +124,7 @@
         <echo level="info">Selected Transform Name: ${selected.transform.properties.basename}</echo>
     </target>
 	
-	<target name="-transformload.params">
+	<target name="-transform.load.params">
 		<echo level="info">Loading ${selected.transform.properties}</echo>
         <property file="${selected.transform.properties}"/>
 	</target>
@@ -132,17 +132,17 @@
 	<target name="transform" depends="-init,
 	        -env.info,
 		    -select-transform-properties,
-	        -transformload.params,
-	        -transformset.variables,
-	        -transformprocesses.to.agent,
-	        -transformprocesses.to.cloud,
-	        -transformset.process.tracingLevels,
-	        -transformset.process.suspendOnFault,
-	        -transformremove.tags"
+	        -transform.load.params,
+	        -transform.set.variables,
+	        -transform.processes.to.agent,
+	        -transform.processes.to.cloud,
+	        -transform.set.process.tracingLevels,
+	        -transform.set.process.suspendOnFault,
+	        -transform.remove.tags"
 	        description="Migrate IPD Exported Archive from one environment to another">
 	    </target>
 	
-    <target name="-transformset.variables">
+    <target name="-transform.set.variables">
         <property 
             name="transform.source.dir" 
             location="${basedir}/sample-data/src"/>
@@ -155,7 +155,7 @@
 	
 
   
-    <target name="-transformprocesses.to.agent" if="${ipd.migrate.processes.to.agent.enabled}">
+    <target name="-transform.processes.to.agent" if="${ipd.migrate.processes.to.agent.enabled}">
         <delete dir="${transform.target.dir}"/>
         <mkdir dir="${transform.target.dir}"/>
         <echo level="info">source: ${transform.source.dir}</echo>
@@ -179,7 +179,7 @@
         </copy>
     </target>
 
-    <target name="-transformprocesses.to.cloud" if="${ipd.migrate.processes.to.cloud.enabled}">
+    <target name="-transform.processes.to.cloud" if="${ipd.migrate.processes.to.cloud.enabled}">
         <delete dir="${transform.target.dir}"/>
         <mkdir  dir="${transform.target.dir}"/>
         <echo level="info">source: ${transform.source.dir}</echo>
@@ -203,10 +203,10 @@
     </target>
     
     
-    <target name="-transformset.process.tracingLevels" 
+    <target name="-transform.set.process.tracingLevels" 
         if="${ipd.migrate.processes.tracingLevelUpdate.enabled}">
         <taskdef resource="net/sf/antcontrib/antlib.xml" classpathref="tools.classpath"/>
-        <foreach target="-transformset.process.tracingLevel" 
+        <foreach target="-transform.set.process.tracingLevel" 
             param="migrate.tracingLevel"
             delimiter=","            
             list="${ipd.migrate.processes.tracingLevelUpdate.levels}">
@@ -218,14 +218,14 @@
 
     
     
-    <target name="-transformset.process.suspendOnFault" 
-            depends="-transformset.process.suspendOnFault.init,-transformset.process.suspendOnFault.disable,-transformset.process.suspendOnFault.enable"
+    <target name="-transform.set.process.suspendOnFault" 
+            depends="-transform.set.process.suspendOnFault.init,-transform.set.process.suspendOnFault.disable,-transform.set.process.suspendOnFault.enable"
             if="${ipd.migrate.processes.tracingLevelUpdate.execute}">
     	<echo level="info">Set suspendOnFault Completed</echo>
 
     </target>
     
-    <target name="-transformset.process.suspendOnFault.init">
+    <target name="-transform.set.process.suspendOnFault.init">
     	<condition 
                 property="ipd.migrate.processes.suspendOnFault.disable" 
                 value="true">
@@ -268,7 +268,7 @@
     	<echo level="info">ipd.migrate.processes.suspendOnFault.enable: ${ipd.migrate.processes.suspendOnFault.enable}</echo>
     </target>
     
-    <target name="-transformset.process.suspendOnFault.disable"  
+    <target name="-transform.set.process.suspendOnFault.disable"  
                 if="${ipd.migrate.processes.suspendOnFault.disable}">
         <echo level="info">Updating Suspend on Fault - disabling</echo>
         <setSuspendOnFault 
@@ -284,7 +284,7 @@
         </copy>
     </target>
     
-    <target name="-transformset.process.suspendOnFault.enable"  
+    <target name="-transform.set.process.suspendOnFault.enable"  
                 if="${ipd.migrate.processes.suspendOnFault.enable}">
         <echo level="info">Updating Suspend on Fault - enabling</echo>
         <setSuspendOnFault 
@@ -300,7 +300,7 @@
         </copy>
     </target>
     
-    <target name="-transformset.process.tracingLevel">
+    <target name="-transform.set.process.tracingLevel">
         <delete dir="${transform.target.dir}"/>
         <mkdir dir="${transform.target.dir}"/>
         <echo level="info">Updating Tracing Level ${migrate.tracingLevel}</echo>
@@ -320,7 +320,7 @@
     
     <!-- Removes specified tags in IPD designs using a regular expression, use the ipd.tags.remove.tagMatchPattern 
     to override default remove pattern (,)?(GIT:\w+) -->
-    <target name="-transformremove.tags" if="${ipd.migrate.removeTags}">
+    <target name="-transform.remove.tags" if="${ipd.migrate.removeTags}">
         <delete dir="${transform.target.dir}"/>
         <mkdir dir="${transform.target.dir}"/>
         <echo level="info">source: ${transform.source.dir}</echo>
