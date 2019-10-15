@@ -1,0 +1,522 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="IICS Asset Migration Utilities" basedir="." default="help">
+
+    <target name="help" description="help - describes how to use this script" depends="-env.info">
+        <echo level="info">This ant script provides set of IICS Asset Transformation Utilities such as:</echo>
+    	<echo level="info"> - Set Process SuspendOnfault Deployment Aattributes</echo>
+    	<echo level="info"> - Set Process Tracing Level Attribute</echo>
+    	<echo level="info"> - Move Process to different agent or group</echo>
+    	<echo level="info"> - Move Process Agemt to Cloud</echo>
+        <echo level="info">Read the doc/README.MD or README.html for more details</echo>
+        <echo level="info">use ant -projecthelp to see available targets</echo>
+        <property name="help.file" value="${basedir}/doc/README.html" />
+        <exec executable="${shell}" spawn="yes">
+            <arg value="${shell.options}" />
+            <arg line="'${shell.open} ${help.file}'" />        
+        </exec>
+    </target>
+
+    <target name="-init" unless="ems.initialized">
+    	<!-- Global properties -->
+	    <condition property="isUnix">
+	        <os family="unix"/>
+	    </condition>
+	    
+	    <condition property="isWindows">
+	        <os family="windows"/>
+	    </condition>
+
+	    <condition property="exec.ext" value="sh">
+	        <os family="unix"/>
+	    </condition>
+
+	    <condition property="exec.ext" value="bat">
+	        <os family="windows"/>
+	    </condition>
+
+	    <condition property="shell" value="bash">
+	        <os family="unix"/>
+	    </condition>
+
+	    <condition property="shell" value="cmd.exe">
+	        <os family="windows"/>
+	    </condition>
+
+	    <condition property="shell.options" value="-c">
+	        <os name="Mac OS X"/>
+	    </condition>
+	    
+	    <condition property="shell.open" value=" open ">
+	        <os name="Mac OS X"/>
+	    </condition>
+	    
+	    <property name="shell.open" value=""/>
+	    
+	    <condition property="shell.options" value="-c">
+	        <os family="unix"/>
+	    </condition>
+
+	    <condition property="shell.options" value="/c">
+	        <os family="windows"/>
+	    </condition>
+
+	    <condition property="isWindows">
+	        <os family="windows"/>
+	    </condition>
+    	
+        <property file="lib/ant/migration.properties"/>
+        <path id="tools.classpath">
+            <fileset dir="${tools.lib}">
+                <include name="*.jar"/>
+            </fileset>
+        </path>
+        <property environment="env"/>
+    </target>
+
+    
+    <target name="build.dist"
+        depends="-init,-env.info"
+        description="Buid Migration Utilty Distribution File with Sources">
+    	<delete verbose="true">
+        	<fileset dir="${basedir}/dist">
+        	    <include name="*.zip"/>
+        		<include name="*.tar.gz"/>
+        	</fileset>
+        </delete>
+
+        <zip basedir="${basedir}" destfile="${target.dist.file}.zip"
+            excludes="${archive.distribution.excludes}">
+        </zip>
+        <tar basedir="${basedir}" destfile="${target.dist.file}.tar.gz" compression="gzip" 
+        excludes="${archive.distribution.excludes}">
+        </tar>
+    </target>
+    
+
+    <target name="-env.info" unless="env.info.displayed" depends="-init">
+        <echo level="info">========================================</echo>
+        <echo level="info">==        IPD Migration Toolkit       ==</echo>
+        <echo level="info">========================================</echo>
+        <echo level="info">Java Version:    ${java.runtime.version}</echo>
+        <echo level="info">Java Home:       ${java.home}</echo>
+        <echo level="info">Ant Version:     ${ant.version}</echo>
+        <echo level="info">Ant Lib:         ${ant.library.dir}</echo>
+        <echo level="info">shell:           ${shell}</echo>
+        <echo level="info">os.name:         ${os.name}</echo>
+        <echo level="info">os.version:      ${os.version}</echo>
+        <echo level="info">os.arch:         ${os.arch}</echo>
+        <echo level="info">env.HOME:        ${env.HOME}</echo>
+        <echo level="info">env.LANG:        ${env.LANG}</echo>
+        <echo level="info">env.SHELL:       ${env.SHELL}</echo>
+        <echo level="info">env.PATH:        ${env.PATH}</echo>
+        <echo level="info">env.JAVA_HOME:   ${env.JAVA_HOME}</echo>
+        <echo level="info">========================================</echo>
+        <property name="env.info.displayed" value="true"/>
+    </target>
+	
+    <target name="-select-transform-properties" unless="selected.transform.properties">
+        <fileset id="available.transform.properties" dir="${basedir}" includes="**/*.transform.properties" /> 
+        <pathconvert property="available.transform.properties.list" refid="available.transform.properties" pathsep=","  />
+        <echo level="info">Available Transform Configurations: ${available.transform.properties.list}</echo>
+        <input validargs="${available.transform.properties.list}" message="Select Transform Configuration:" addproperty="selected.transform.properties"></input>
+        <basename file="${selected.transform.properties}" property="selected.transform.properties.basename" suffix=".properties"/>
+        <echo level="info">Selected Transform Configuration: ${selected.transform.properties}</echo>
+        <echo level="info">Selected Transform Name: ${selected.transform.properties.basename}</echo>
+    </target>
+	
+	<target name="-transformload.params">
+		<echo level="info">Loading ${selected.transform.properties}</echo>
+        <property file="${selected.transform.properties}"/>
+	</target>
+	
+	<target name="transform" depends="-init,
+	        -env.info,
+		    -select-transform-properties,
+	        -transformload.params,
+	        -transformset.variables,
+	        -transformprocesses.to.agent,
+	        -transformprocesses.to.cloud,
+	        -transformset.process.tracingLevels,
+	        -transformset.process.suspendOnFault,
+	        -transformremove.tags"
+	        description="Migrate IPD Exported Archive from one environment to another">
+	    </target>
+	
+    <target name="-transformset.variables">
+        <property 
+            name="transform.source.dir" 
+            location="${basedir}/sample-data/src"/>
+        <property 
+            name="transform.target.dir" 
+            location="${basedir}/target/tmp/${iics.release}"/>     
+        <echo level="info">Source dir:    ${transform.source.dir}</echo>
+        <echo level="info">Target dir:    ${transform.target.dir}</echo>
+    </target>
+	
+
+  
+    <target name="-transformprocesses.to.agent" if="${ipd.migrate.processes.to.agent.enabled}">
+        <delete dir="${transform.target.dir}"/>
+        <mkdir dir="${transform.target.dir}"/>
+        <echo level="info">source: ${transform.source.dir}</echo>
+        <echo level="info">target: ${transform.target.dir}</echo>
+        <echo level="info">include: ${ipd.migrate.processes.to.agent.include}</echo>
+        <echo level="info">exclude: ${ipd.migrate.processes.to.agent.exclude}</echo>
+        <xslt style="${basedir}/xsl/move_service_to_agent.xsl" 
+            basedir="${transform.source.dir}"
+            includes="${ipd.migrate.processes.to.agent.include}"
+            excludes="${ipd.migrate.processes.to.agent.exclude}"
+            extension=".xml"
+            destdir="${transform.target.dir}"
+            classpathref="tools.classpath">
+            <factory name="net.sf.saxon.TransformerFactoryImpl"/>
+            <param name="targetLocation" expression="${ipd.migrate.processes.to.agent.name}"/>
+        </xslt>
+    	<copy todir="${transform.source.dir}" overwrite="true" verbose="true">
+            <fileset dir="${transform.target.dir}"
+                includes="**/*.xml">
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="-transformprocesses.to.cloud" if="${ipd.migrate.processes.to.cloud.enabled}">
+        <delete dir="${transform.target.dir}"/>
+        <mkdir  dir="${transform.target.dir}"/>
+        <echo level="info">source: ${transform.source.dir}</echo>
+        <echo level="info">target: ${transform.target.dir}</echo>
+        <echo level="info">include: ${ipd.migrate.processes.to.cloud.include}</echo>
+        <echo level="info">exclude: ${ipd.migrate.processes.to.cloud.exclude}</echo>
+        <xslt style="${basedir}/xsl/move_service_to_cloud.xsl" 
+            basedir="${transform.source.dir}"
+            includes="${ipd.migrate.processes.to.cloud.include}"
+            excludes="${ipd.migrate.processes.to.cloud.exclude}"
+            extension=".xml"
+            destdir="${transform.target.dir}"
+            classpathref="tools.classpath">
+            <factory name="net.sf.saxon.TransformerFactoryImpl"/>
+        </xslt>
+    	<copy todir="${transform.source.dir}" overwrite="true" verbose="true">
+            <fileset dir="${transform.target.dir}"
+                includes="**/*.xml">
+            </fileset>
+        </copy>
+    </target>
+    
+    
+    <target name="-transformset.process.tracingLevels" 
+        if="${ipd.migrate.processes.tracingLevelUpdate.enabled}">
+        <taskdef resource="net/sf/antcontrib/antlib.xml" classpathref="tools.classpath"/>
+        <foreach target="-transformset.process.tracingLevel" 
+            param="migrate.tracingLevel"
+            delimiter=","            
+            list="${ipd.migrate.processes.tracingLevelUpdate.levels}">
+            <param name="transform.source.dir">${transform.source.dir}</param>
+            <param name="transform.target.dir">${transform.target.dir}</param>
+            <param name="release.properties">${selected.transform.properties}</param>
+        </foreach>
+    </target>
+
+    
+    
+    <target name="-transformset.process.suspendOnFault" 
+            depends="-transformset.process.suspendOnFault.init,-transformset.process.suspendOnFault.disable,-transformset.process.suspendOnFault.enable"
+            if="${ipd.migrate.processes.tracingLevelUpdate.execute}">
+    	<echo level="info">Set suspendOnFault Completed</echo>
+
+    </target>
+    
+    <target name="-transformset.process.suspendOnFault.init">
+    	<condition 
+                property="ipd.migrate.processes.suspendOnFault.disable" 
+                value="true">
+            <and>          
+                <equals arg1="${ipd.migrate.processes.tracingLevelUpdate.execute}" arg2="true"/>
+                <equals arg1="${ipd.migrate.processes.suspendOnFault.false.execute}" arg2="true"/>
+            </and>
+        </condition>
+    	<condition 
+                property="ipd.migrate.processes.suspendOnFault.enable" 
+                value="true">
+            <and>          
+                <equals arg1="${ipd.migrate.processes.tracingLevelUpdate.execute}" arg2="true"/>
+                <equals arg1="${ipd.migrate.processes.suspendOnFault.true.execute}" arg2="true"/>
+            </and>
+        </condition>
+    	<condition 
+                property="ipd.migrate.processes.suspendOnFault.disable" 
+                value="false">
+            <or>          
+                <equals arg1="${ipd.migrate.processes.tracingLevelUpdate.execute}" arg2="false"/>
+                <equals arg1="${ipd.migrate.processes.suspendOnFault.false.execute}" arg2="false"/>
+            </or>
+        </condition>
+        <condition 
+                property="ipd.migrate.processes.suspendOnFault.enable" 
+                value="false">
+            <or>          
+                <equals arg1="${ipd.migrate.processes.tracingLevelUpdate.execute}" arg2="false"/>
+                <equals arg1="${ipd.migrate.processes.suspendOnFault.true.execute}" arg2="false"/>
+            </or>
+        </condition>
+    	<echo level="info">Disable suspendOnFault: ${ipd.migrate.processes.suspendOnFault.false.execute}</echo>
+        <echo level="info">Includes: ${ipd.migrate.processes.suspendOnFault.false.includes} </echo>
+        <echo level="info">Excludes: ${ipd.migrate.processes.suspendOnFault.false.excludes}</echo>
+        <echo level="info">Enable suspendOnFault: ${ipd.migrate.processes.suspendOnFault.true.execute}</echo>
+        <echo level="info">Includes: ${ipd.migrate.processes.suspendOnFault.true.includes} </echo>
+        <echo level="info">Excludes: ${ipd.migrate.processes.suspendOnFault.true.excludes}</echo>
+    	<echo level="info">ipd.migrate.processes.suspendOnFault.disable: ${ipd.migrate.processes.suspendOnFault.disable}</echo>
+    	<echo level="info">ipd.migrate.processes.suspendOnFault.enable: ${ipd.migrate.processes.suspendOnFault.enable}</echo>
+    </target>
+    
+    <target name="-transformset.process.suspendOnFault.disable"  
+                if="${ipd.migrate.processes.suspendOnFault.disable}">
+        <echo level="info">Updating Suspend on Fault - disabling</echo>
+        <setSuspendOnFault 
+        	sourcedir="${transform.source.dir}" 
+        	targetdir="${transform.target.dir}" 
+        	suspendOnFault="false" 
+            includes="${ipd.migrate.processes.suspendOnFault.false.includes}"
+            excludes="${ipd.migrate.processes.suspendOnFault.false.excludes}"/>
+    	<copy todir="${transform.source.dir}" overwrite="true" verbose="true">
+            <fileset dir="${transform.target.dir}"
+                includes="**/*.xml">
+            </fileset>
+        </copy>
+    </target>
+    
+    <target name="-transformset.process.suspendOnFault.enable"  
+                if="${ipd.migrate.processes.suspendOnFault.enable}">
+        <echo level="info">Updating Suspend on Fault - enabling</echo>
+        <setSuspendOnFault 
+        	sourcedir="${transform.source.dir}" 
+        	targetdir="${transform.target.dir}" 
+        	suspendOnFault="true" 
+            includes="${ipd.migrate.processes.suspendOnFault.true.includes}"
+            excludes="${ipd.migrate.processes.suspendOnFault.true.excludes}"/>
+    	<copy todir="${transform.source.dir}" overwrite="true" verbose="true">
+    		<fileset dir="${transform.target.dir}"
+                includes="**/*.xml">
+            </fileset>
+        </copy>
+    </target>
+    
+    <target name="-transformset.process.tracingLevel">
+        <delete dir="${transform.target.dir}"/>
+        <mkdir dir="${transform.target.dir}"/>
+        <echo level="info">Updating Tracing Level ${migrate.tracingLevel}</echo>
+        <setTracingLevel 
+        	sourcedir="${transform.source.dir}" 
+        	targetdir="${transform.target.dir}"
+        	properties="${release.properties}"  
+        	tracinglevel="${migrate.tracingLevel}" />
+    	<copy todir="${transform.source.dir}" overwrite="true" verbose="true">
+            <fileset dir="${transform.target.dir}"
+                includes="**/*.xml">
+            </fileset>
+        </copy>
+    </target>
+    
+	
+    
+    <!-- Removes specified tags in IPD designs using a regular expression, use the ipd.tags.remove.tagMatchPattern 
+    to override default remove pattern (,)?(GIT:\w+) -->
+    <target name="-transformremove.tags" if="${ipd.migrate.removeTags}">
+        <delete dir="${transform.target.dir}"/>
+        <mkdir dir="${transform.target.dir}"/>
+        <echo level="info">source: ${transform.source.dir}</echo>
+        <echo level="info">target: ${transform.target.dir}</echo>
+        <property name="ipd.tags.remove.include" value="**/*.xml"/>
+        <property name="ipd.tags.remove.exclude" value=""/>
+        <property name="ipd.tags.remove.tagMatchPattern" value="(,)?(GIT:\w+)"/>
+        <echo level="info">include: ${ipd.tags.remove.include}</echo>
+        <echo level="info">exclude: ${ipd.tags.remove.exclude}</echo>
+        <xslt style="${basedir}/xsl/remove_tags.xsl" 
+            basedir="${transform.source.dir}"
+            includes="${ipd.tags.remove.include}"
+            excludes="${ipd.tags.remove.exclude}"
+            extension=".xml"
+            destdir="${transform.target.dir}"
+            classpathref="tools.classpath">
+            <factory name="net.sf.saxon.TransformerFactoryImpl"/>
+            <param name="tagMatchPattern" expression="${ipd.tags.remove.tagMatchPattern}"/>
+        </xslt>
+        <copy todir="${transform.source.dir}" overwrite="true" verbose="true">
+            <fileset dir="${transform.target.dir}"
+                includes="${ipd.tags.remove.include}"
+                excludes="${ipd.tags.remove.exclude}">
+            </fileset>
+        </copy>
+    </target>
+
+
+    <target name="test-move-to-agent" depends="-init,-env.info">
+        <property name="transform.source.dir" location="${basedir}/sample-data/src"/>
+        <property name="transform.target.dir" location="${basedir}/target/test-move-to-agent"/>
+        <property name="targetLocation" value="TEST_1"/>
+        <mkdir dir="${transform.target.dir}"/>        
+        <xslt style="${basedir}/xsl/move_service_to_agent.xsl" 
+            basedir="${transform.source.dir}" 
+            destdir="${transform.target.dir}"
+            includes="**/*.pd.xml,**/*.PROCESS.xml"
+            extension=".xml"
+            force="true"
+            classpathref="tools.classpath">
+            <factory name="net.sf.saxon.TransformerFactoryImpl"/>
+            <param name="targetLocation" expression="${targetLocation}"/>
+        </xslt>
+    </target>
+
+    <target name="test-move-to-cloud" depends="-init">
+        <property name="transform.source.dir" location="${basedir}/sample-data/src"/>
+        <property name="transform.target.dir" location="${basedir}/target/test-move-to-cloud"/>
+        <mkdir dir="${transform.target.dir}"/>        
+        <xslt style="${basedir}/xsl/move_service_to_cloud.xsl" 
+            basedir="${transform.source.dir}" 
+            destdir="${transform.target.dir}"
+            includes="**/*.pd.xml,**/*.PROCESS.xml"
+            extension=".xml"
+            force="true"
+            classpathref="tools.classpath">
+            <factory name="net.sf.saxon.TransformerFactoryImpl"/>
+        </xslt>
+    </target>
+
+    <target name="test-set-tracingLevel" depends="-init">
+        <property name="transform.source.dir" location="${basedir}/sample-data/src"/>
+        <property name="transform.target.dir" location="${basedir}/target/test-set-tracingLevel"/>
+        <property name="service.tracingLevel" value="none"/>
+        <mkdir dir="${transform.target.dir}"/>        
+        <xslt style="${basedir}/xsl/set_service_tracingLevel.xsl" 
+            basedir="${transform.source.dir}" 
+            destdir="${transform.target.dir}"
+            includes="**/*.pd.xml,**/*.PROCESS.xml"
+            extension=".xml"
+            force="true"
+            classpathref="tools.classpath">
+            <factory name="net.sf.saxon.TransformerFactoryImpl"/>
+            <param name="tracingLevel" expression="${service.tracingLevel}"/>
+        </xslt>
+    </target>
+
+    <target name="test-set-suspendOnFault" depends="-init,-env.info">
+        <property name="transform.source.dir" location="${basedir}/sample-data/src"/>
+        <property name="transform.target.dir" location="${basedir}/target/test-set-suspendOnFault"/>
+        <property name="service.suspendOnFault" value="true"/>
+
+        <mkdir dir="${transform.target.dir}"/>        
+        <xslt style="${basedir}/xsl/set_service_suspendOnFault.xsl" 
+            basedir="${transform.source.dir}" 
+            destdir="${transform.target.dir}"
+            includes="**/*.pd.xml,**/*.PROCESS.xml"
+            extension=".xml"
+            force="true"
+            classpathref="tools.classpath">
+            <factory name="net.sf.saxon.TransformerFactoryImpl"/>
+            <param name="suspendOnFault" expression="${service.suspendOnFault}"/>
+        </xslt>
+    </target>
+
+    <target name="test_transform">
+        <property 
+        	name="iics.release" 
+        	value="test_transfrom_all"/>
+        <property 
+            name="transform.source.dir" 
+            location="${basedir}/target/tmp/test_migrate_src"/>
+        <property 
+            name="transform.target.dir" 
+            location="${basedir}/target/tmp/${iics.release}"/>
+    	<echo level="info">Copying Sources from ${basedir}/sample-data/src to temp Folder</echo>
+    	<copy todir="${basedir}/target/tmp/test_migrate_src" overwrite="true" verbose="true">
+            <fileset dir="${basedir}/sample-data/src">
+            </fileset>
+        </copy>
+    	<antcall target="transform"></antcall>
+    </target>
+    
+    
+    <!-- MACROS -->
+        
+    
+    <macrodef name="setTracingLevel">
+        <attribute name="sourceDir"/>
+        <attribute name="targetDir"/>
+        <attribute name="tracingLevel" default="none"/>
+        <attribute name="properties"/>
+        <sequential>
+            <property file="${basedir}/lib/ant/migration.properties"/>
+            <property file="@{properties}"/>
+            <path id="tools.classpath">
+                <fileset dir="${tools.lib}">
+                    <include name="*.jar"/>
+                </fileset>
+            </path>
+            <echo level="info">****** sourceDir:    @{sourceDir}</echo>
+            <echo level="info">****** targetDir:    @{targetDir}</echo>
+            <echo level="info">****** includes:     ${ipd.migrate.processes.tracingLevelUpdate.@{tracingLevel}.includes}</echo>
+            <echo level="info">****** excludes:     ${ipd.migrate.processes.tracingLevelUpdate.@{tracingLevel}.excludes}</echo>
+            <echo level="info">****** tracingLevel: @{tracingLevel}</echo>     
+            <echo level="info">****** properties:   @{properties}</echo>     
+            <xslt style="${basedir}/xsl/set_service_tracingLevel.xsl" 
+                basedir="@{sourceDir}" 
+                destdir="@{targetDir}"
+                includes="${ipd.migrate.processes.tracingLevelUpdate.@{tracingLevel}.includes}"
+                excludes="${ipd.migrate.processes.tracingLevelUpdate.@{tracingLevel}.excludes}"
+                extension=".xml"
+                force="true"
+                classpathref="tools.classpath">
+                <factory name="net.sf.saxon.TransformerFactoryImpl"/>
+                <param name="tracingLevel" expression="@{tracingLevel}"/>
+            </xslt>
+        </sequential>
+    </macrodef>
+    
+    <macrodef name="setSuspendOnFault">
+        <attribute name="sourceDir"/>
+        <attribute name="targetDir"/>
+        <attribute name="suspendOnFault" default="true"/>
+        <attribute name="includes"/>
+        <attribute name="excludes"/>
+        <sequential>
+            <property file="${basedir}/lib/ant/migration.properties"/>
+            <path id="tools.classpath">
+                <fileset dir="${tools.lib}">
+                    <include name="*.jar"/>
+                </fileset>
+            </path>
+            <echo level="info">****** sourceDir:    @{sourceDir}</echo>
+            <echo level="info">****** targetDir:    @{targetDir}</echo>
+            <echo level="info">****** includes:     @{includes}</echo>
+            <echo level="info">****** excludes:     @{excludes}</echo>
+            <echo level="info">****** suspendOnFault: @{suspendOnFault}</echo>         
+            <xslt style="${basedir}/xsl/set_service_suspendOnFault.xsl" 
+                basedir="@{sourceDir}" 
+                destdir="@{targetDir}"
+                includes="@{includes}"
+                excludes="@{excludes}"
+                extension=".xml"
+                force="true"
+                classpathref="tools.classpath">
+                <param name="suspendOnFault" expression="@{suspendOnFault}"/>
+            </xslt>
+        </sequential>
+    </macrodef>
+	
+	
+	
+    
+    <macrodef name="openInDefaultBrowser">
+        <attribute name="file"/>
+        <attribute name="shell" default="${shell}"/>
+        <attribute name="shellOpen" default="${shell.open}"/>
+        <attribute name="shellOptions" default="${shell.options}"/>
+        <attribute name="spawn" default="yes"/>
+        <sequential>
+            <exec executable="@{shell}" spawn="yes">
+                <arg value="@{shellOptions}" />
+                <arg line="'@{shellOpen} @{file}'" />        
+            </exec>
+        </sequential>
+    </macrodef>
+	
+</project>
