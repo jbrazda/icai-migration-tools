@@ -115,7 +115,7 @@
     </target>
 	
     <target name="-select-transform-properties" unless="selected.transform.properties">
-        <fileset id="available.transform.properties" dir="${basedir}" includes="**/*.transform.properties" /> 
+        <fileset id="available.transform.properties" dir="${migration.properties.base}" includes="**/*.transform.properties" /> 
         <pathconvert property="available.transform.properties.list" refid="available.transform.properties" pathsep=","  />
         <echo level="info">Available Transform Configurations: ${available.transform.properties.list}</echo>
         <input validargs="${available.transform.properties.list}" message="Select Transform Configuration:" addproperty="selected.transform.properties"></input>
