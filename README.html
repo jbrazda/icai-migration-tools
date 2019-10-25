@@ -732,11 +732,255 @@ pre {
 }
 </style><title>README</title></head><body><article class="markdown-body"><h1 id="informatica-iics-cai-migration-tools">
 <a id="user-content-informatica-iics-cai-migration-tools" class="anchor" href="#informatica-iics-cai-migration-tools" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Informatica IICS-CAI Migration Tools</h1>
-<p>This Project provides set of IICS Asset Transformation Utilities such as:</p>
-<ul>
-<li>Set Process Suspend On Fault Deployment Attributes</li>
-<li>Set Process Tracing Level Attribute</li>
-<li>Move Process to different agent or group</li>
-<li>Move Process from Secure Agent or agent deployment group to Cloud</li>
-</ul>
+<p>This Project provides set of IICS Asset Transformation Utilities to automate common transition changes on Design Assets
+Transformations are mostly implemented using XSLT while providing Ant Scripting to run these transformations in platform independent way.</p>
+<p>This Tool set uses the same XSLT Processor as Informatica Cloud Platform (Saxon) to provide consistent output for transformed designs</p>
+<h2 id="main-ant-script">
+<a id="user-content-main-ant-script" class="anchor" href="#main-ant-script" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Main Ant Script</h2>
+<p>The <a href="build.xml">build.xml</a> ant script provides targets to Transform Expanded Designs in the directory</p>
+<p>It has following main targets</p>
+<pre lang="text"><code>Buildfile: /Users/jbrazda/git/icai-migration-tools/build.xml
+
+Main targets:
+
+ build.dist  Build Migration Utility Distribution File with Sources
+ help        help - describes how to use this script
+ transform   Migrate IPD Exported Archive from one environment to another
+Default target: help
+</code></pre>
+<p>Use the <code>transform</code> target to execute all migration transformations in one step sequentially</p>
+<p>The transformation process relies on Externally provided properties or property file which enable/disable individual transformation steps and configure which designs should undergo specific transformation and what will be transformation parameters</p>
+<h3 id="example-transformation-configuration">
+<a id="user-content-example-transformation-configuration" class="anchor" href="#example-transformation-configuration" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Example Transformation Configuration</h3>
+<p>transformation property file should have an extension <code>transform.properties</code> as the script can prompt for list of pre configured transformation properties when the file property is not set. Follow example naming convention in the form of <code>PackageName_customer_environment.transform.properties</code> i.e. <code>AlertServices_iclab_dev.transform.properties</code></p>
+<div class="highlight highlight-source-ini"><pre>
+<span class="pl-c"><span class="pl-c">#</span> MOVE Process to Cloud</span>
+<span class="pl-c"><span class="pl-c">#</span> ---------------------</span>
+<span class="pl-c"><span class="pl-c">#</span> Set this property to Enable/Disable Transform Step</span>
+<span class="pl-k">ipd.migrate.processes.to.cloud.enabled</span>=false
+<span class="pl-c"><span class="pl-c">#</span> use this property to include specific processes or use Ant pattern expressions.</span>
+<span class="pl-c"><span class="pl-c">#</span> migrate.processObjects.enabled=true is set</span>
+<span class="pl-k">ipd.migrate.processes.to.cloud.include</span>=*.PROCESS.xml
+<span class="pl-c"><span class="pl-c">#</span> you can exclude specified files from tar</span>
+<span class="pl-k">ipd.migrate.processes.to.cloud.exclude</span>=*-1.PROCESS.xml
+
+
+<span class="pl-c"><span class="pl-c">#</span> MOVE Processes to Agent</span>
+<span class="pl-c"><span class="pl-c">#</span> -----------------------</span>
+<span class="pl-c"><span class="pl-c">#</span> Set this property to Enable/Disable Transform Step</span>
+<span class="pl-k">ipd.migrate.processes.to.agent.enabled</span>=true
+<span class="pl-c"><span class="pl-c">#</span> specify target Agent Name or Agent Group Name to Migrate to</span>
+<span class="pl-k">ipd.migrate.processes.to.agent.name</span>=DEMO
+<span class="pl-c"><span class="pl-c">#</span> Use this property to include specific processes or use Ant pattern expressions.</span>
+<span class="pl-c"><span class="pl-c">#</span> This property is required when migrate.processObjects.enabled=true is set</span>
+<span class="pl-c"><span class="pl-c">#</span> ipd.migrate.processes.to.agent.include=Explore/Tools/Processes/SP-Shell-CMD.PROCESS.xml</span>
+<span class="pl-k">ipd.migrate.processes.to.agent.include</span>=**/*NA.PROCESS.xml
+<span class="pl-c"><span class="pl-c">#</span> you can exclude specified files from </span>
+<span class="pl-k">ipd.migrate.processes.to.agent.exclude</span>=**/SCH-*.PROCESS.xml
+
+
+<span class="pl-c"><span class="pl-c">#</span> SET Process Tracing Levels</span>
+<span class="pl-c"><span class="pl-c">#</span> -----------------------</span>
+<span class="pl-c"><span class="pl-c">#</span> Set this property to Enable/Disable Transform Step</span>
+<span class="pl-k">ipd.migrate.processes.tracingLevelUpdate.enabled</span>=true
+
+<span class="pl-c"><span class="pl-c">#</span> List of tracing levels to be processed</span>
+<span class="pl-c"><span class="pl-c">#</span> this is an example to process all levels when you want to set levels on any selected processes</span>
+<span class="pl-c"><span class="pl-c">#</span> ipd.migrate.processes.tracingLevelUpdate.levels=none,terse,normal,verbose</span>
+<span class="pl-c"><span class="pl-c">#</span> note that each supported tracing level must have incudes/excludes defined</span>
+<span class="pl-c"><span class="pl-c">#</span> Following example setting will set  all processes tracing level to None</span>
+<span class="pl-k">ipd.migrate.processes.tracingLevelUpdate.levels</span>=verbose
+
+<span class="pl-c"><span class="pl-c">#</span> Includes Excludes for each level</span>
+<span class="pl-c"><span class="pl-c">#</span> Use this property to include specific processes to get their Logging levels updated </span>
+<span class="pl-c"><span class="pl-c">#</span> Use relative path reference starting from $basedir or use Ant pattern expressions.</span>
+<span class="pl-c"><span class="pl-c">#</span> This property is required when migrate.processObjects.enabled=true is set</span>
+
+<span class="pl-k">ipd.migrate.processes.tracingLevelUpdate.none.includes</span>=**/*.PROCESS.xml
+<span class="pl-k">ipd.migrate.processes.tracingLevelUpdate.none.excludes</span>=
+
+<span class="pl-k">ipd.migrate.processes.tracingLevelUpdate.terse.includes</span>=nothing
+<span class="pl-k">ipd.migrate.processes.tracingLevelUpdate.terse.excludes</span>=**/*.xml
+
+<span class="pl-k">ipd.migrate.processes.tracingLevelUpdate.normal.includes</span>=nothing
+<span class="pl-k">ipd.migrate.processes.tracingLevelUpdate.normal.excludes</span>=**/*.xml
+
+<span class="pl-k">ipd.migrate.processes.tracingLevelUpdate.verbose.includes</span>=**/*.PROCESS.xml
+<span class="pl-k">ipd.migrate.processes.tracingLevelUpdate.verbose.excludes</span>=nothing
+
+
+<span class="pl-c"><span class="pl-c">#</span> SET Process Suspend On fault</span>
+<span class="pl-c"><span class="pl-c">#</span> -----------------------</span>
+<span class="pl-c"><span class="pl-c">#</span> Set this property to Enable/Disable Transform Step</span>
+<span class="pl-k">ipd.migrate.processes.tracingLevelUpdate.execute</span>=false
+
+<span class="pl-c"><span class="pl-c">#</span>includes/excludes for processes to enable suspendOnFault</span>
+<span class="pl-k">ipd.migrate.processes.suspendOnFault.true.execute</span>=true
+<span class="pl-k">ipd.migrate.processes.suspendOnFault.true.includes</span>=**/*.PROCESS.xml
+<span class="pl-k">ipd.migrate.processes.suspendOnFault.true.excludes</span>=
+
+<span class="pl-c"><span class="pl-c">#</span>includes/excludes for processes to disable suspendOnFault</span>
+<span class="pl-k">ipd.migrate.processes.suspendOnFault.false.execute</span>=true
+<span class="pl-k">ipd.migrate.processes.suspendOnFault.false.includes</span>=none
+<span class="pl-k">ipd.migrate.processes.suspendOnFault.false.excludes</span>=**/*.PROCESS.xml
+
+<span class="pl-c"><span class="pl-c">#</span>remove Specific tags based on pattern</span>
+<span class="pl-k">ipd.migrate.removeTags</span>=false
+<span class="pl-k">ipd.tags.remove.include</span>=**/*.xml
+<span class="pl-k">ipd.tags.remove.exclude</span>=
+<span class="pl-k">ipd.tags.remove.tagMatchPattern</span>=(,)?(GIT:\w+)</pre></div>
+<h3 id="invoking-transform-from-main-build-script-of-your-iics-component-build">
+<a id="user-content-invoking-transform-from-main-build-script-of-your-iics-component-build" class="anchor" href="#invoking-transform-from-main-build-script-of-your-iics-component-build" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Invoking transform from Main Build Script of Your IICS component Build</h3>
+<p>Following is an example snippet how this transformation can be called from main Build Script</p>
+<div class="highlight highlight-text-xml"><pre>&lt;<span class="pl-ent">target</span> <span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">"</span>iics.prepare.package<span class="pl-pds">"</span></span> 
+    <span class="pl-e">unless</span>=<span class="pl-s"><span class="pl-pds">"</span>${tools.transform.disabled}<span class="pl-pds">"</span></span>
+    <span class="pl-e">depends</span>=<span class="pl-s"><span class="pl-pds">"</span>-env.info,-select-release,-load.release.properties,install.tools.transform<span class="pl-pds">"</span></span>&gt;
+    &lt;<span class="pl-ent">property</span> <span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">"</span>transform.src.folder<span class="pl-pds">"</span></span> <span class="pl-e">location</span>=<span class="pl-s"><span class="pl-pds">"</span>${basedir}/target/transform/src<span class="pl-pds">"</span></span>&gt;&lt;/<span class="pl-ent">property</span>&gt;
+    &lt;<span class="pl-ent">property</span> <span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">"</span>transform.temp.folder<span class="pl-pds">"</span></span> <span class="pl-e">location</span>=<span class="pl-s"><span class="pl-pds">"</span>${basedir}/target/transform/temp<span class="pl-pds">"</span></span>&gt;&lt;/<span class="pl-ent">property</span>&gt;
+    &lt;<span class="pl-ent">echo</span> <span class="pl-e">level</span>=<span class="pl-s"><span class="pl-pds">"</span>info<span class="pl-pds">"</span></span>&gt;Copying Sources from ${iics.extract.dir} to ${transform.src.folder}&lt;/<span class="pl-ent">echo</span>&gt;
+    &lt;<span class="pl-ent">delete</span> <span class="pl-e">dir</span>=<span class="pl-s"><span class="pl-pds">"</span>${transform.src.folder}<span class="pl-pds">"</span></span>/&gt;
+    &lt;<span class="pl-ent">copy</span> <span class="pl-e">todir</span>=<span class="pl-s"><span class="pl-pds">"</span>${transform.src.folder}<span class="pl-pds">"</span></span> <span class="pl-e">overwrite</span>=<span class="pl-s"><span class="pl-pds">"</span>true<span class="pl-pds">"</span></span> <span class="pl-e">verbose</span>=<span class="pl-s"><span class="pl-pds">"</span>true<span class="pl-pds">"</span></span>&gt;
+        &lt;<span class="pl-ent">fileset</span> <span class="pl-e">dir</span>=<span class="pl-s"><span class="pl-pds">"</span>${iics.extract.dir}<span class="pl-pds">"</span></span>&gt;
+        &lt;/<span class="pl-ent">fileset</span>&gt;
+    &lt;/<span class="pl-ent">copy</span>&gt;
+    &lt;<span class="pl-ent">ant</span> <span class="pl-e">antfile</span>=<span class="pl-s"><span class="pl-pds">"</span>${tools.package.transform}<span class="pl-pds">"</span></span> <span class="pl-e">target</span>=<span class="pl-s"><span class="pl-pds">"</span>transform<span class="pl-pds">"</span></span> <span class="pl-e">inheritall</span>=<span class="pl-s"><span class="pl-pds">"</span>false<span class="pl-pds">"</span></span> <span class="pl-e">inheritrefs</span>=<span class="pl-s"><span class="pl-pds">"</span>false<span class="pl-pds">"</span></span>&gt;
+        &lt;<span class="pl-ent">property</span> <span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">"</span>iics.release<span class="pl-pds">"</span></span> <span class="pl-e">value</span>=<span class="pl-s"><span class="pl-pds">"</span>${iics.release.basename}<span class="pl-pds">"</span></span>/&gt;
+        &lt;<span class="pl-ent">property</span> <span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">"</span>transform.source.dir<span class="pl-pds">"</span></span> <span class="pl-e">location</span>=<span class="pl-s"><span class="pl-pds">"</span>${transform.src.folder}<span class="pl-pds">"</span></span>/&gt;
+        &lt;<span class="pl-ent">property</span> <span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">"</span>transform.target.dir<span class="pl-pds">"</span></span> <span class="pl-e">location</span>=<span class="pl-s"><span class="pl-pds">"</span>${transform.temp.folder}<span class="pl-pds">"</span></span>/&gt;
+        &lt;<span class="pl-ent">property</span> <span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">"</span>migration.properties.base<span class="pl-pds">"</span></span> <span class="pl-e">value</span>=<span class="pl-s"><span class="pl-pds">"</span>${iics.external.properties.dir}<span class="pl-pds">"</span></span>/&gt;
+    &lt;/<span class="pl-ent">ant</span>&gt;
+&lt;/<span class="pl-ent">target</span>&gt;</pre></div>
+<h2 id="set-process-suspend-on-fault-deployment-attributes">
+<a id="user-content-set-process-suspend-on-fault-deployment-attributes" class="anchor" href="#set-process-suspend-on-fault-deployment-attributes" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Set Process Suspend On Fault Deployment Attributes</h2>
+<p>"Suspend on Fault" is advanced ICAI Process engine feature used in certain types of process
+to suspend process execution when process unexpectedly faults. This allows to retry failed invoke or resume process. Read more about [Suspend On Fault][suspend_on_fault] feature.
+This transformation allows to bulk change this IPD process parameter when necessary, for example in test environments processes are left to fault on unexpected errors but in production they might be set to suspend on Fault which allows longer time to inspect them for root cause of failure or take corrective actions manually and resume process to running state. Successful resuming might also need elevated Persistence level.</p>
+<h3 id="suspend-on-fault-xslt">
+<a id="user-content-suspend-on-fault-xslt" class="anchor" href="#suspend-on-fault-xslt" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Suspend On Fault XSLT</h3>
+<p><a href="xsl/set_service_suspendOnFault.xsl">xsl/set_service_suspendOnFault.xsl</a>
+Invoke Via Ant</p>
+<h3 id="example-use-in-ant">
+<a id="user-content-example-use-in-ant" class="anchor" href="#example-use-in-ant" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Example use in Ant</h3>
+<div class="highlight highlight-text-xml"><pre>&lt;<span class="pl-ent">target</span> <span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">"</span>test-set-suspendOnFault<span class="pl-pds">"</span></span> <span class="pl-e">depends</span>=<span class="pl-s"><span class="pl-pds">"</span>-init,-env.info<span class="pl-pds">"</span></span>&gt;
+    &lt;<span class="pl-ent">property</span> <span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">"</span>transform.source.dir<span class="pl-pds">"</span></span> <span class="pl-e">location</span>=<span class="pl-s"><span class="pl-pds">"</span>${basedir}/sample-data/src<span class="pl-pds">"</span></span>/&gt;
+    &lt;<span class="pl-ent">property</span> <span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">"</span>transform.target.dir<span class="pl-pds">"</span></span> <span class="pl-e">location</span>=<span class="pl-s"><span class="pl-pds">"</span>${basedir}/target/test-set-suspendOnFault<span class="pl-pds">"</span></span>/&gt;
+    &lt;<span class="pl-ent">property</span> <span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">"</span>service.suspendOnFault<span class="pl-pds">"</span></span> <span class="pl-e">value</span>=<span class="pl-s"><span class="pl-pds">"</span>true<span class="pl-pds">"</span></span>/&gt;
+
+    &lt;<span class="pl-ent">mkdir</span> <span class="pl-e">dir</span>=<span class="pl-s"><span class="pl-pds">"</span>${transform.target.dir}<span class="pl-pds">"</span></span>/&gt;
+    &lt;<span class="pl-ent">xslt</span> <span class="pl-e">style</span>=<span class="pl-s"><span class="pl-pds">"</span>${xsl.scripts.base}/set_service_suspendOnFault.xsl<span class="pl-pds">"</span></span>
+        <span class="pl-e">basedir</span>=<span class="pl-s"><span class="pl-pds">"</span>${transform.source.dir}<span class="pl-pds">"</span></span> 
+        <span class="pl-e">destdir</span>=<span class="pl-s"><span class="pl-pds">"</span>${transform.target.dir}<span class="pl-pds">"</span></span>
+        <span class="pl-e">includes</span>=<span class="pl-s"><span class="pl-pds">"</span>**/*.pd.xml,**/*.PROCESS.xml<span class="pl-pds">"</span></span>
+        <span class="pl-e">extension</span>=<span class="pl-s"><span class="pl-pds">"</span>.xml<span class="pl-pds">"</span></span>
+        <span class="pl-e">force</span>=<span class="pl-s"><span class="pl-pds">"</span>true<span class="pl-pds">"</span></span>
+        <span class="pl-e">classpathref</span>=<span class="pl-s"><span class="pl-pds">"</span>tools.classpath<span class="pl-pds">"</span></span>&gt;
+        &lt;<span class="pl-ent">factory</span> <span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">"</span>net.sf.saxon.TransformerFactoryImpl<span class="pl-pds">"</span></span>/&gt;
+        &lt;<span class="pl-ent">param</span> <span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">"</span>suspendOnFault<span class="pl-pds">"</span></span> <span class="pl-e">expression</span>=<span class="pl-s"><span class="pl-pds">"</span>${service.suspendOnFault}<span class="pl-pds">"</span></span>/&gt;
+    &lt;/<span class="pl-ent">xslt</span>&gt;
+&lt;/<span class="pl-ent">target</span>&gt;</pre></div>
+<h2 id="set-process-tracing-level-attribute">
+<a id="user-content-set-process-tracing-level-attribute" class="anchor" href="#set-process-tracing-level-attribute" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Set Process Tracing Level Attribute</h2>
+<p>Select a Tracing Level from this list to determine the corresponding persistence and logging level settings: None, Terse, Normal, Verbose. See the table below for more information.
+The Tracing Level of a process implemented using Process Designer couples the Persistence and Logging levels that are handled separately by Process Developer.</p>
+<table>
+<thead>
+<tr>
+<th>Tracing Level</th>
+<th>Persistence Level</th>
+<th>Logging Level</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>None</td>
+<td>Brief</td>
+<td>None</td>
+</tr>
+<tr>
+<td>Terse</td>
+<td>Brief</td>
+<td>Fault</td>
+</tr>
+<tr>
+<td>Normal</td>
+<td>Brief</td>
+<td>Execution with Service Data</td>
+</tr>
+<tr>
+<td>Verbose</td>
+<td>Final</td>
+<td>Execution with Data</td>
+</tr>
+</tbody>
+</table>
+<h3 id="xslt-set-tracing-level">
+<a id="user-content-xslt-set-tracing-level" class="anchor" href="#xslt-set-tracing-level" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>XSLT Set tracing level</h3>
+<p><a href="xsl/set_service_tracingLevel.xsl">xsl/set_service_tracingLevel.xsl</a></p>
+<h2 id="example-use-in-ant-1">
+<a id="user-content-example-use-in-ant-1" class="anchor" href="#example-use-in-ant-1" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Example use in Ant</h2>
+<div class="highlight highlight-text-xml"><pre>&lt;<span class="pl-ent">target</span> <span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">"</span>test-set-tracingLevel<span class="pl-pds">"</span></span> <span class="pl-e">depends</span>=<span class="pl-s"><span class="pl-pds">"</span>-init<span class="pl-pds">"</span></span>&gt;
+    &lt;<span class="pl-ent">property</span> <span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">"</span>transform.source.dir<span class="pl-pds">"</span></span> <span class="pl-e">location</span>=<span class="pl-s"><span class="pl-pds">"</span>${basedir}/sample-data/src<span class="pl-pds">"</span></span>/&gt;
+    &lt;<span class="pl-ent">property</span> <span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">"</span>transform.target.dir<span class="pl-pds">"</span></span> <span class="pl-e">location</span>=<span class="pl-s"><span class="pl-pds">"</span>${basedir}/target/test-set-tracingLevel<span class="pl-pds">"</span></span>/&gt;
+    &lt;<span class="pl-ent">property</span> <span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">"</span>service.tracingLevel<span class="pl-pds">"</span></span> <span class="pl-e">value</span>=<span class="pl-s"><span class="pl-pds">"</span>none<span class="pl-pds">"</span></span>/&gt;
+    &lt;<span class="pl-ent">mkdir</span> <span class="pl-e">dir</span>=<span class="pl-s"><span class="pl-pds">"</span>${transform.target.dir}<span class="pl-pds">"</span></span>/&gt;
+    &lt;<span class="pl-ent">xslt</span> <span class="pl-e">style</span>=<span class="pl-s"><span class="pl-pds">"</span>${xsl.scripts.base}/set_service_tracingLevel.xsl<span class="pl-pds">"</span></span>
+        <span class="pl-e">basedir</span>=<span class="pl-s"><span class="pl-pds">"</span>${transform.source.dir}<span class="pl-pds">"</span></span>
+        <span class="pl-e">destdir</span>=<span class="pl-s"><span class="pl-pds">"</span>${transform.target.dir}<span class="pl-pds">"</span></span>
+        <span class="pl-e">includes</span>=<span class="pl-s"><span class="pl-pds">"</span>**/*.pd.xml,**/*.PROCESS.xml<span class="pl-pds">"</span></span>
+        <span class="pl-e">extension</span>=<span class="pl-s"><span class="pl-pds">"</span>.xml<span class="pl-pds">"</span></span>
+        <span class="pl-e">force</span>=<span class="pl-s"><span class="pl-pds">"</span>true<span class="pl-pds">"</span></span>
+        <span class="pl-e">classpathref</span>=<span class="pl-s"><span class="pl-pds">"</span>tools.classpath<span class="pl-pds">"</span></span>&gt;
+        &lt;<span class="pl-ent">factory</span> <span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">"</span>net.sf.saxon.TransformerFactoryImpl<span class="pl-pds">"</span></span>/&gt;
+        &lt;<span class="pl-ent">param</span> <span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">"</span>tracingLevel<span class="pl-pds">"</span></span> <span class="pl-e">expression</span>=<span class="pl-s"><span class="pl-pds">"</span>${service.tracingLevel}<span class="pl-pds">"</span></span>/&gt;
+    &lt;/<span class="pl-ent">xslt</span>&gt;
+&lt;/<span class="pl-ent">target</span>&gt;</pre></div>
+<h2 id="setting-run-on-parameter-of-the-process">
+<a id="user-content-setting-run-on-parameter-of-the-process" class="anchor" href="#setting-run-on-parameter-of-the-process" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Setting Run On Parameter of the Process</h2>
+<p>One of the key parameters of the Process design is "Run On" which defines where process would be deployed  on "Publish".
+You can choose Cloud Server, specific agent or agent group.
+If your process uses a connector that is event based, make sure that you run the process on the same agent that the connector runs on.
+This Tool provides to Targets:</p>
+<h3 id="move-process-to-different-agent-or-group">
+<a id="user-content-move-process-to-different-agent-or-group" class="anchor" href="#move-process-to-different-agent-or-group" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Move Process to different agent or group</h3>
+<p>XSLT</p>
+<p><a href="xsl/move_service_to_agent.xsl">xsl/move_service_to_agent.xsl</a></p>
+<h3 id="example-use-in-ant-2">
+<a id="user-content-example-use-in-ant-2" class="anchor" href="#example-use-in-ant-2" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Example Use in Ant</h3>
+<div class="highlight highlight-text-xml"><pre>&lt;<span class="pl-ent">target</span> <span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">"</span>test-move-to-agent<span class="pl-pds">"</span></span> <span class="pl-e">depends</span>=<span class="pl-s"><span class="pl-pds">"</span>-init,-env.info<span class="pl-pds">"</span></span>&gt;
+    &lt;<span class="pl-ent">property</span> <span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">"</span>transform.source.dir<span class="pl-pds">"</span></span> <span class="pl-e">location</span>=<span class="pl-s"><span class="pl-pds">"</span>${basedir}/sample-data/src<span class="pl-pds">"</span></span>/&gt;
+    &lt;<span class="pl-ent">property</span> <span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">"</span>transform.target.dir<span class="pl-pds">"</span></span> <span class="pl-e">location</span>=<span class="pl-s"><span class="pl-pds">"</span>${basedir}/target/test-move-to-agent<span class="pl-pds">"</span></span>/&gt;
+    &lt;<span class="pl-ent">property</span> <span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">"</span>targetLocation<span class="pl-pds">"</span></span> <span class="pl-e">value</span>=<span class="pl-s"><span class="pl-pds">"</span>TEST_1<span class="pl-pds">"</span></span>/&gt;
+    &lt;<span class="pl-ent">mkdir</span> <span class="pl-e">dir</span>=<span class="pl-s"><span class="pl-pds">"</span>${transform.target.dir}<span class="pl-pds">"</span></span>/&gt;
+    &lt;<span class="pl-ent">xslt</span> <span class="pl-e">style</span>=<span class="pl-s"><span class="pl-pds">"</span>${xsl.scripts.base}/move_service_to_agent.xsl<span class="pl-pds">"</span></span>
+        <span class="pl-e">basedir</span>=<span class="pl-s"><span class="pl-pds">"</span>${transform.source.dir}<span class="pl-pds">"</span></span>
+        <span class="pl-e">destdir</span>=<span class="pl-s"><span class="pl-pds">"</span>${transform.target.dir}<span class="pl-pds">"</span></span>
+        <span class="pl-e">includes</span>=<span class="pl-s"><span class="pl-pds">"</span>**/*.pd.xml,**/*.PROCESS.xml<span class="pl-pds">"</span></span>
+        <span class="pl-e">extension</span>=<span class="pl-s"><span class="pl-pds">"</span>.xml<span class="pl-pds">"</span></span>
+        <span class="pl-e">force</span>=<span class="pl-s"><span class="pl-pds">"</span>true<span class="pl-pds">"</span></span>
+        <span class="pl-e">classpathref</span>=<span class="pl-s"><span class="pl-pds">"</span>tools.classpath<span class="pl-pds">"</span></span>&gt;
+        &lt;<span class="pl-ent">factory</span> <span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">"</span>net.sf.saxon.TransformerFactoryImpl<span class="pl-pds">"</span></span>/&gt;
+        &lt;<span class="pl-ent">param</span> <span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">"</span>targetLocation<span class="pl-pds">"</span></span> <span class="pl-e">expression</span>=<span class="pl-s"><span class="pl-pds">"</span>${targetLocation}<span class="pl-pds">"</span></span>/&gt;
+    &lt;/<span class="pl-ent">xslt</span>&gt;
+&lt;/<span class="pl-ent">target</span>&gt;</pre></div>
+<h3 id="move-process-from-secure-agent-or-agent-deployment-group-to-cloud">
+<a id="user-content-move-process-from-secure-agent-or-agent-deployment-group-to-cloud" class="anchor" href="#move-process-from-secure-agent-or-agent-deployment-group-to-cloud" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Move Process from Secure Agent or agent deployment group to Cloud</h3>
+<p>XSLT</p>
+<h3 id="example-use-in-ant-3">
+<a id="user-content-example-use-in-ant-3" class="anchor" href="#example-use-in-ant-3" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Example Use in Ant</h3>
+<div class="highlight highlight-text-xml"><pre>&lt;<span class="pl-ent">target</span> <span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">"</span>test-move-to-cloud<span class="pl-pds">"</span></span> <span class="pl-e">depends</span>=<span class="pl-s"><span class="pl-pds">"</span>-init<span class="pl-pds">"</span></span>&gt;
+    &lt;<span class="pl-ent">property</span> <span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">"</span>transform.source.dir<span class="pl-pds">"</span></span> <span class="pl-e">location</span>=<span class="pl-s"><span class="pl-pds">"</span>${basedir}/sample-data/src<span class="pl-pds">"</span></span>/&gt;
+    &lt;<span class="pl-ent">property</span> <span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">"</span>transform.target.dir<span class="pl-pds">"</span></span> <span class="pl-e">location</span>=<span class="pl-s"><span class="pl-pds">"</span>${basedir}/target/test-move-to-cloud<span class="pl-pds">"</span></span>/&gt;
+    &lt;<span class="pl-ent">mkdir</span> <span class="pl-e">dir</span>=<span class="pl-s"><span class="pl-pds">"</span>${transform.target.dir}<span class="pl-pds">"</span></span>/&gt;
+    &lt;<span class="pl-ent">xslt</span> <span class="pl-e">style</span>=<span class="pl-s"><span class="pl-pds">"</span>${xsl.scripts.base}/move_service_to_cloud.xsl<span class="pl-pds">"</span></span>
+        <span class="pl-e">basedir</span>=<span class="pl-s"><span class="pl-pds">"</span>${transform.source.dir}<span class="pl-pds">"</span></span>
+        <span class="pl-e">destdir</span>=<span class="pl-s"><span class="pl-pds">"</span>${transform.target.dir}<span class="pl-pds">"</span></span>
+        <span class="pl-e">includes</span>=<span class="pl-s"><span class="pl-pds">"</span>**/*.pd.xml,**/*.PROCESS.xml<span class="pl-pds">"</span></span>
+        <span class="pl-e">extension</span>=<span class="pl-s"><span class="pl-pds">"</span>.xml<span class="pl-pds">"</span></span>
+        <span class="pl-e">force</span>=<span class="pl-s"><span class="pl-pds">"</span>true<span class="pl-pds">"</span></span>
+        <span class="pl-e">classpathref</span>=<span class="pl-s"><span class="pl-pds">"</span>tools.classpath<span class="pl-pds">"</span></span>&gt;
+        &lt;<span class="pl-ent">factory</span> <span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">"</span>net.sf.saxon.TransformerFactoryImpl<span class="pl-pds">"</span></span>/&gt;
+    &lt;/<span class="pl-ent">xslt</span>&gt;
+&lt;/<span class="pl-ent">target</span>&gt;</pre></div>
+<p><a href="xsl/move_service_to_cloud.xsl">xsl/move_service_to_cloud.xsl</a></p>
+<p>[suspend_on_fault] : <a href="https://network.informatica.com/onlinehelp/activevos/current/index.htm#page/bb-av-designer/Suspending_a_Process_on_Uncaught_Faults.html" rel="nofollow">https://network.informatica.com/onlinehelp/activevos/current/index.htm#page/bb-av-designer/Suspending_a_Process_on_Uncaught_Faults.html</a></p>
 </article></body></html>

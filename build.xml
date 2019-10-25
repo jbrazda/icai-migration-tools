@@ -9,10 +9,10 @@
     	<echo level="info"> - Move Process Agemt to Cloud</echo>
         <echo level="info">Read the doc/README.MD or README.html for more details</echo>
         <echo level="info">use ant -projecthelp to see available targets</echo>
-        <property name="help.file" value="${basedir}/doc/README.html" />
+        <property name="help.file" value="${basedir}/README.html" />
         <exec executable="${shell}" spawn="yes">
             <arg value="${shell.options}" />
-            <arg line="'${shell.open} ${help.file}'" />        
+            <arg value='${shell.open} "${help.file}"' />        
         </exec>
     </target>
 
@@ -76,7 +76,7 @@
     
     <target name="build.dist"
         depends="-init,-env.info"
-        description="Buid Migration Utilty Distribution File with Sources">
+        description="Build Migration Utility Distribution File with Sources (Deprecate) Use github releases instead">
     	<delete verbose="true">
         	<fileset dir="${basedir}/dist">
         	    <include name="*.zip"/>
@@ -130,17 +130,17 @@
 	</target>
 	
 	<target name="transform" depends="-init,
-	        -env.info,
-		    -select-transform-properties,
-	        -transform.load.params,
-	        -transform.set.variables,
-	        -transform.processes.to.agent,
-	        -transform.processes.to.cloud,
-	        -transform.set.process.tracingLevels,
-	        -transform.set.process.suspendOnFault,
-	        -transform.remove.tags"
-	        description="Migrate IPD Exported Archive from one environment to another">
-	    </target>
+        -env.info,
+	    -select-transform-properties,
+        -transform.load.params,
+        -transform.set.variables,
+        -transform.processes.to.agent,
+        -transform.processes.to.cloud,
+        -transform.set.process.tracingLevels,
+        -transform.set.process.suspendOnFault,
+        -transform.remove.tags"
+        description="Migrate IPD Exported Archive from one environment to another">
+    </target>
 	
     <target name="-transform.set.variables">
         <property 
@@ -502,9 +502,6 @@
         </sequential>
     </macrodef>
 	
-	
-	
-    
     <macrodef name="openInDefaultBrowser">
         <attribute name="file"/>
         <attribute name="shell" default="${shell}"/>
@@ -514,7 +511,7 @@
         <sequential>
             <exec executable="@{shell}" spawn="yes">
                 <arg value="@{shellOptions}" />
-                <arg line="'@{shellOpen} @{file}'" />        
+                <arg value='@{shellOpen} "@{file}"' />        
             </exec>
         </sequential>
     </macrodef>
