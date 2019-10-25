@@ -1,9 +1,11 @@
 # Informatica IICS-CAI Migration Tools
 
-This Project provides set of IICS Asset Transformation Utilities to automate common transition changes on Design Assets
-Transformations are mostly implemented using XSLT while providing Ant Scripting to run these transformations in platform independent way.
+This Project provides set of IICS Asset Transformation Utilities to automate common
+transition changes on Design Assets. Transformations are mostly implemented
+using XSLT while providing Ant Scripting to run these transformations in platform independent way.
 
-This Tool set uses the same XSLT Processor as Informatica Cloud Platform (Saxon) to provide consistent output for transformed designs
+This Tool set uses the same XSLT Processor as Informatica Cloud Platform
+(Saxon) to provide consistent output for transformed designs
 
 ## Main Ant Script
 
@@ -24,11 +26,15 @@ Default target: help
 
 Use the `transform` target to execute all migration transformations in one step sequentially
 
-The transformation process relies on Externally provided properties or property file which enable/disable individual transformation steps and configure which designs should undergo specific transformation and what will be transformation parameters
+The transformation process relies on Externally provided properties or property file which
+enable/disable individual transformation steps and configure which designs should undergo specific
+transformation and what will be transformation parameters
 
 ### Example Transformation Configuration
 
-transformation property file should have an extension `transform.properties` as the script can prompt for list of pre configured transformation properties when the file property is not set. Follow example naming convention in the form of `PackageName_customer_environment.transform.properties` i.e. `AlertServices_iclab_dev.transform.properties`
+transformation property file should have an extension `transform.properties` as the script can prompt for list of
+pre configured transformation properties when the file property is not set. Follow example naming convention in
+the form of `PackageName_customer_environment.transform.properties` i.e. `AlertServices_iclab_dev.transform.properties`
 
 ```properties
 
@@ -53,7 +59,7 @@ ipd.migrate.processes.to.agent.name=DEMO
 # This property is required when migrate.processObjects.enabled=true is set
 # ipd.migrate.processes.to.agent.include=Explore/Tools/Processes/SP-Shell-CMD.PROCESS.xml
 ipd.migrate.processes.to.agent.include=**/*NA.PROCESS.xml
-# you can exclude specified files from 
+# you can exclude specified files from
 ipd.migrate.processes.to.agent.exclude=**/SCH-*.PROCESS.xml
 
 
@@ -70,7 +76,7 @@ ipd.migrate.processes.tracingLevelUpdate.enabled=true
 ipd.migrate.processes.tracingLevelUpdate.levels=verbose
 
 # Includes Excludes for each level
-# Use this property to include specific processes to get their Logging levels updated 
+# Use this property to include specific processes to get their Logging levels updated
 # Use relative path reference starting from $basedir or use Ant pattern expressions.
 # This property is required when migrate.processObjects.enabled=true is set
 
@@ -113,8 +119,20 @@ ipd.tags.remove.tagMatchPattern=(,)?(GIT:\w+)
 
 Following is an example snippet how this transformation can be called from main Build Script
 
+#### Key properties to drive invocation of transform Target
+
+| Property                      | Description                                                                                     | Example Value                                     |
+|-------------------------------|-------------------------------------------------------------------------------------------------|---------------------------------------------------|
+| iics.release                  | Path to release configuration file                                                              | `./conf/iclab-dev.release.properties`             |
+| transform.source.dir          | Path to transformation Source Directory with IPD designs                                        | `./target/transform/src`                          |
+| transform.target.dir          | Path to Temp target directory used to transformation output                                     | `./target/transform/temp`                         |
+| migration.properties.base     | Path to directory where Transformation Configuration files are stored, used in interactive mode | `/users/jbrazda/iics`                             |
+| selected.transform.properties | Path to Selected Transformation Properties file                                                 | `AlertServices_PennyMac_dev.transform.properties` |
+
+#### Example Target Implementation in Main Build
+
 ```xml
-<target name="iics.prepare.package" 
+<target name="iics.prepare.package"
     unless="${tools.transform.disabled}"
     depends="-env.info,-select-release,-load.release.properties,install.tools.transform">
     <property name="transform.src.folder" location="${basedir}/target/transform/src"></property>
@@ -137,13 +155,23 @@ Following is an example snippet how this transformation can be called from main 
 ## Set Process Suspend On Fault Deployment Attributes
 
 "Suspend on Fault" is advanced ICAI Process engine feature used in certain types of process
-to suspend process execution when process unexpectedly faults. This allows to retry failed invoke or resume process. Read more about [Suspend On Fault][suspend_on_fault] feature.
-This transformation allows to bulk change this IPD process parameter when necessary, for example in test environments processes are left to fault on unexpected errors but in production they might be set to suspend on Fault which allows longer time to inspect them for root cause of failure or take corrective actions manually and resume process to running state. Successful resuming might also need elevated Persistence level.  
+to suspend process execution when process unexpectedly faults. This allows to retry failed invoke
+or resume process. Read more about [Suspend On Fault][suspend_on_fault] feature.
+This transformation allows to bulk change this IPD process parameter when necessary,
+for example in test environments processes are left to fault on unexpected errors but in production
+they might be set to suspend on Fault which allows longer time to inspect them for root cause of
+failure or take corrective actions manually and resume process to running state.
+Successful resuming might also need elevated Persistence level.  
 
 ### Suspend On Fault XSLT
 
 [xsl/set_service_suspendOnFault.xsl](xsl/set_service_suspendOnFault.xsl)
-Invoke Via Ant
+
+### Parameters
+
+| Parameter      | Values     |
+|----------------|------------|
+| suspendOnFault | true/false |
 
 ### Example use in Ant
 
@@ -155,7 +183,7 @@ Invoke Via Ant
 
     <mkdir dir="${transform.target.dir}"/>
     <xslt style="${xsl.scripts.base}/set_service_suspendOnFault.xsl"
-        basedir="${transform.source.dir}" 
+        basedir="${transform.source.dir}"
         destdir="${transform.target.dir}"
         includes="**/*.pd.xml,**/*.PROCESS.xml"
         extension=".xml"
@@ -169,8 +197,10 @@ Invoke Via Ant
 
 ## Set Process Tracing Level Attribute
 
-Select a Tracing Level from this list to determine the corresponding persistence and logging level settings: None, Terse, Normal, Verbose. See the table below for more information.
-The Tracing Level of a process implemented using Process Designer couples the Persistence and Logging levels that are handled separately by Process Developer.
+Select a Tracing Level from this list to determine the corresponding persistence and
+logging level settings: None, Terse, Normal, Verbose. See the table below for more information.
+The Tracing Level of a process implemented using Process Designer couples the Persistence and
+Logging levels that are handled separately by Process Developer.
 
 | Tracing Level | Persistence Level | Logging Level               |
 |---------------|-------------------|-----------------------------|
@@ -179,7 +209,13 @@ The Tracing Level of a process implemented using Process Designer couples the Pe
 | Normal        | Brief             | Execution with Service Data |
 | Verbose       | Final             | Execution with Data         |
 
-### XSLT Set tracing level
+### XSLT Set Tracing Level
+
+### Parameters
+
+| Parameter    | Values                       |
+|--------------|------------------------------|
+| tracingLevel | none, terse, normal, verbose |
 
 [xsl/set_service_tracingLevel.xsl](xsl/set_service_tracingLevel.xsl)
 
@@ -206,14 +242,18 @@ The Tracing Level of a process implemented using Process Designer couples the Pe
 
 ## Setting Run On Parameter of the Process
 
-One of the key parameters of the Process design is "Run On" which defines where process would be deployed  on "Publish".
-You can choose Cloud Server, specific agent or agent group.
-If your process uses a connector that is event based, make sure that you run the process on the same agent that the connector runs on.
-This Tool provides to Targets:
+One of the key parameters of the Process design is "Run On" which defines where process
+would be deployed  on "Publish". You can choose Cloud Server, specific agent or agent group.
+If your process uses a connector that is event based, make sure
+that you run the process on the same agent that the connector runs on.
+
+This Tool provides two targets to manage `Run On` Parameter:
 
 ### Move Process to different agent or group
 
-XSLT
+| Parameter      | Values                           |
+|----------------|----------------------------------|
+| targetLocation | Name of the Agent or Agent Group |
 
 [xsl/move_service_to_agent.xsl](xsl/move_service_to_agent.xsl)
 
@@ -240,7 +280,9 @@ XSLT
 
 ### Move Process from Secure Agent or agent deployment group to Cloud
 
-XSLT
+XSLT This Script does not have parameters
+
+[xsl/move_service_to_cloud.xsl](xsl/move_service_to_cloud.xsl)
 
 ### Example Use in Ant
 
@@ -261,6 +303,4 @@ XSLT
 </target>
 ```
 
-[xsl/move_service_to_cloud.xsl](xsl/move_service_to_cloud.xsl)
-
-[suspend_on_fault] : https://network.informatica.com/onlinehelp/activevos/current/index.htm#page/bb-av-designer/Suspending_a_Process_on_Uncaught_Faults.html
+[suspend_on_fault]: https://network.informatica.com/onlinehelp/activevos/current/index.htm#page/bb-av-designer/Suspending_a_Process_on_Uncaught_Faults.html
