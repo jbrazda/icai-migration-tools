@@ -114,19 +114,19 @@
         <property name="env.info.displayed" value="true"/>
     </target>
 	
-    <target name="-select-transform-properties" unless="selected.transform.properties">
+    <target name="-select-transform-properties" unless="iics.package.transform.config">
         <fileset id="available.transform.properties" dir="${migration.properties.base}" includes="**/*.transform.properties" /> 
         <pathconvert property="available.transform.properties.list" refid="available.transform.properties" pathsep=","  />
         <echo level="info">Available Transform Configurations: ${available.transform.properties.list}</echo>
-        <input validargs="${available.transform.properties.list}" message="Select Transform Configuration:" addproperty="selected.transform.properties"></input>
-        <basename file="${selected.transform.properties}" property="selected.transform.properties.basename" suffix=".properties"/>
-        <echo level="info">Selected Transform Configuration: ${selected.transform.properties}</echo>
-        <echo level="info">Selected Transform Name: ${selected.transform.properties.basename}</echo>
+        <input validargs="${available.transform.properties.list}" message="Select Transform Configuration:" addproperty="iics.package.transform.config"></input>
+        <basename file="${iics.package.transform.config}" property="iics.package.transform.config.basename" suffix=".properties"/>
+        <echo level="info">Selected Transform Configuration: ${iics.package.transform.config}</echo>
+        <echo level="info">Selected Transform Name: ${iics.package.transform.config.basename}</echo>
     </target>
 	
 	<target name="-transform.load.params">
-		<echo level="info">Loading ${selected.transform.properties}</echo>
-        <property file="${selected.transform.properties}"/>
+		<echo level="info">Loading ${iics.package.transform.config}</echo>
+        <property file="${iics.package.transform.config}"/>
 	</target>
 	
 	<target name="transform" depends="-init,
@@ -212,7 +212,7 @@
             list="${ipd.migrate.processes.tracingLevelUpdate.levels}">
             <param name="transform.source.dir">${transform.source.dir}</param>
             <param name="transform.target.dir">${transform.target.dir}</param>
-            <param name="release.properties">${selected.transform.properties}</param>
+            <param name="release.properties">${iics.package.transform.config}</param>
         </foreach>
     </target>
 

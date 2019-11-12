@@ -127,7 +127,7 @@ Following is an example snippet how this transformation can be called from main 
 | transform.source.dir          | Path to transformation Source Directory with IPD designs                                        | `./target/transform/src`                          |
 | transform.target.dir          | Path to Temp target directory used to transformation output                                     | `./target/transform/temp`                         |
 | migration.properties.base     | Path to directory where Transformation Configuration files are stored, used in interactive mode | `/users/jbrazda/iics`                             |
-| selected.transform.properties | Path to Selected Transformation Properties file                                                 | `AlertServices_PennyMac_dev.transform.properties` |
+| iics.package.transform.config | Path to Selected Transformation Properties file                                                 | `AlertServices_PennyMac_dev.transform.properties` |
 
 #### Example Target Implementation in Main Build
 
