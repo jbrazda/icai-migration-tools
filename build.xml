@@ -3,10 +3,10 @@
 
     <target name="help" description="help - describes how to use this script" depends="-env.info">
         <echo level="info">This ant script provides set of IICS Asset Transformation Utilities such as:</echo>
-    	<echo level="info"> - Set Process SuspendOnfault Deployment Aattributes</echo>
-    	<echo level="info"> - Set Process Tracing Level Attribute</echo>
-    	<echo level="info"> - Move Process to different agent or group</echo>
-    	<echo level="info"> - Move Process Agemt to Cloud</echo>
+        <echo level="info"> - Set Process SuspendOnfault Deployment Aattributes</echo>
+        <echo level="info"> - Set Process Tracing Level Attribute</echo>
+        <echo level="info"> - Move Process to different agent or group</echo>
+        <echo level="info"> - Move Process Agemt to Cloud</echo>
         <echo level="info">Read the doc/README.MD or README.html for more details</echo>
         <echo level="info">use ant -projecthelp to see available targets</echo>
         <property name="help.file" value="${basedir}/README.html" />
@@ -17,53 +17,53 @@
     </target>
 
     <target name="-init" unless="ems.initialized">
-    	<!-- Global properties -->
-	    <condition property="isUnix">
-	        <os family="unix"/>
-	    </condition>
-	    
-	    <condition property="isWindows">
-	        <os family="windows"/>
-	    </condition>
+        <!-- Global properties -->
+        <condition property="isUnix">
+            <os family="unix"/>
+        </condition>
+        
+        <condition property="isWindows">
+            <os family="windows"/>
+        </condition>
 
-	    <condition property="exec.ext" value="sh">
-	        <os family="unix"/>
-	    </condition>
+        <condition property="exec.ext" value="sh">
+            <os family="unix"/>
+        </condition>
 
-	    <condition property="exec.ext" value="bat">
-	        <os family="windows"/>
-	    </condition>
+        <condition property="exec.ext" value="bat">
+            <os family="windows"/>
+        </condition>
 
-	    <condition property="shell" value="bash">
-	        <os family="unix"/>
-	    </condition>
+        <condition property="shell" value="bash">
+            <os family="unix"/>
+        </condition>
 
-	    <condition property="shell" value="cmd.exe">
-	        <os family="windows"/>
-	    </condition>
+        <condition property="shell" value="cmd.exe">
+            <os family="windows"/>
+        </condition>
 
-	    <condition property="shell.options" value="-c">
-	        <os name="Mac OS X"/>
-	    </condition>
-	    
-	    <condition property="shell.open" value=" open ">
-	        <os name="Mac OS X"/>
-	    </condition>
-	    
-	    <property name="shell.open" value=""/>
-	    
-	    <condition property="shell.options" value="-c">
-	        <os family="unix"/>
-	    </condition>
+        <condition property="shell.options" value="-c">
+            <os name="Mac OS X"/>
+        </condition>
+        
+        <condition property="shell.open" value=" open ">
+            <os name="Mac OS X"/>
+        </condition>
+        
+        <property name="shell.open" value=""/>
+        
+        <condition property="shell.options" value="-c">
+            <os family="unix"/>
+        </condition>
 
-	    <condition property="shell.options" value="/c">
-	        <os family="windows"/>
-	    </condition>
+        <condition property="shell.options" value="/c">
+            <os family="windows"/>
+        </condition>
 
-	    <condition property="isWindows">
-	        <os family="windows"/>
-	    </condition>
-    	
+        <condition property="isWindows">
+            <os family="windows"/>
+        </condition>
+        
         <property file="lib/ant/migration.properties"/>
         <path id="tools.classpath">
             <fileset dir="${tools.lib}">
@@ -77,11 +77,11 @@
     <target name="build.dist"
         depends="-init,-env.info"
         description="Build Migration Utility Distribution File with Sources (Deprecate) Use github releases instead">
-    	<delete verbose="true">
-        	<fileset dir="${basedir}/dist">
-        	    <include name="*.zip"/>
-        		<include name="*.tar.gz"/>
-        	</fileset>
+        <delete verbose="true">
+            <fileset dir="${basedir}/dist">
+                <include name="*.zip"/>
+                <include name="*.tar.gz"/>
+            </fileset>
         </delete>
 
         <zip basedir="${basedir}" destfile="${target.dist.file}.zip"
@@ -113,7 +113,7 @@
         <echo level="info">========================================</echo>
         <property name="env.info.displayed" value="true"/>
     </target>
-	
+    
     <target name="-select-transform-properties" unless="iics.package.transform.config">
         <fileset id="available.transform.properties" dir="${migration.properties.base}" includes="**/*.transform.properties" /> 
         <pathconvert property="available.transform.properties.list" refid="available.transform.properties" pathsep=","  />
@@ -123,19 +123,19 @@
         <echo level="info">Selected Transform Configuration: ${iics.package.transform.config}</echo>
         <echo level="info">Selected Transform Name: ${iics.package.transform.config.basename}</echo>
     </target>
-	
-	<target name="-transform.load.params">
-	    <condition property="iics.package.transform.config.available" >
-	        <available file="${iics.package.transform.config}"></available>
-	    </condition>
-		<echo level="info">Loading ${iics.package.transform.config}</echo>
-	    <fail unless="${iics.package.transform.config.available}" message="Unable to load the transfrom configuration file ${iics.package.transform.config} "/>
+    
+    <target name="-transform.load.params">
+        <condition property="iics.package.transform.config.available" >
+            <available file="${iics.package.transform.config}"></available>
+        </condition>
+        <echo level="info">Loading ${iics.package.transform.config}</echo>
+        <fail unless="${iics.package.transform.config.available}" message="Unable to load the transfrom configuration file ${iics.package.transform.config} "/>
         <property file="${iics.package.transform.config}"/>
-	</target>
-	
-	<target name="transform" depends="-init,
+    </target>
+    
+    <target name="transform" depends="-init,
         -env.info,
-	    -select-transform-properties,
+        -select-transform-properties,
         -transform.load.params,
         -transform.set.variables,
         -transform.processes.to.agent,
@@ -145,7 +145,7 @@
         -transform.remove.tags"
         description="Migrate IPD Exported Archive from one environment to another">
     </target>
-	
+    
     <target name="-transform.set.variables">
         <property 
             name="transform.source.dir" 
@@ -156,7 +156,7 @@
         <echo level="info">Source dir:    ${transform.source.dir}</echo>
         <echo level="info">Target dir:    ${transform.target.dir}</echo>
     </target>
-	
+    
 
   
     <target name="-transform.processes.to.agent" if="${ipd.migrate.processes.to.agent.enabled}">
@@ -176,7 +176,7 @@
             <factory name="net.sf.saxon.TransformerFactoryImpl"/>
             <param name="targetLocation" expression="${ipd.migrate.processes.to.agent.name}"/>
         </xslt>
-    	<copy todir="${transform.source.dir}" overwrite="true" verbose="true">
+        <copy todir="${transform.source.dir}" overwrite="true" verbose="true">
             <fileset dir="${transform.target.dir}"
                 includes="**/*.xml">
             </fileset>
@@ -199,7 +199,7 @@
             classpathref="tools.classpath">
             <factory name="net.sf.saxon.TransformerFactoryImpl"/>
         </xslt>
-    	<copy todir="${transform.source.dir}" overwrite="true" verbose="true">
+        <copy todir="${transform.source.dir}" overwrite="true" verbose="true">
             <fileset dir="${transform.target.dir}"
                 includes="**/*.xml">
             </fileset>
@@ -225,12 +225,12 @@
     <target name="-transform.set.process.suspendOnFault" 
             depends="-transform.set.process.suspendOnFault.init,-transform.set.process.suspendOnFault.disable,-transform.set.process.suspendOnFault.enable"
             if="${ipd.migrate.processes.tracingLevelUpdate.execute}">
-    	<echo level="info">Set suspendOnFault Completed</echo>
+        <echo level="info">Set suspendOnFault Completed</echo>
 
     </target>
     
     <target name="-transform.set.process.suspendOnFault.init">
-    	<condition 
+        <condition 
                 property="ipd.migrate.processes.suspendOnFault.disable" 
                 value="true">
             <and>          
@@ -238,7 +238,7 @@
                 <equals arg1="${ipd.migrate.processes.suspendOnFault.false.execute}" arg2="true"/>
             </and>
         </condition>
-    	<condition 
+        <condition 
                 property="ipd.migrate.processes.suspendOnFault.enable" 
                 value="true">
             <and>          
@@ -246,7 +246,7 @@
                 <equals arg1="${ipd.migrate.processes.suspendOnFault.true.execute}" arg2="true"/>
             </and>
         </condition>
-    	<condition 
+        <condition 
                 property="ipd.migrate.processes.suspendOnFault.disable" 
                 value="false">
             <or>          
@@ -262,26 +262,26 @@
                 <equals arg1="${ipd.migrate.processes.suspendOnFault.true.execute}" arg2="false"/>
             </or>
         </condition>
-    	<echo level="info">Disable suspendOnFault: ${ipd.migrate.processes.suspendOnFault.false.execute}</echo>
+        <echo level="info">Disable suspendOnFault: ${ipd.migrate.processes.suspendOnFault.false.execute}</echo>
         <echo level="info">Includes: ${ipd.migrate.processes.suspendOnFault.false.includes} </echo>
         <echo level="info">Excludes: ${ipd.migrate.processes.suspendOnFault.false.excludes}</echo>
         <echo level="info">Enable suspendOnFault: ${ipd.migrate.processes.suspendOnFault.true.execute}</echo>
         <echo level="info">Includes: ${ipd.migrate.processes.suspendOnFault.true.includes} </echo>
         <echo level="info">Excludes: ${ipd.migrate.processes.suspendOnFault.true.excludes}</echo>
-    	<echo level="info">ipd.migrate.processes.suspendOnFault.disable: ${ipd.migrate.processes.suspendOnFault.disable}</echo>
-    	<echo level="info">ipd.migrate.processes.suspendOnFault.enable: ${ipd.migrate.processes.suspendOnFault.enable}</echo>
+        <echo level="info">ipd.migrate.processes.suspendOnFault.disable: ${ipd.migrate.processes.suspendOnFault.disable}</echo>
+        <echo level="info">ipd.migrate.processes.suspendOnFault.enable: ${ipd.migrate.processes.suspendOnFault.enable}</echo>
     </target>
     
     <target name="-transform.set.process.suspendOnFault.disable"  
                 if="${ipd.migrate.processes.suspendOnFault.disable}">
         <echo level="info">Updating Suspend on Fault - disabling</echo>
         <setSuspendOnFault 
-        	sourcedir="${transform.source.dir}" 
-        	targetdir="${transform.target.dir}" 
-        	suspendOnFault="false" 
+            sourcedir="${transform.source.dir}" 
+            targetdir="${transform.target.dir}" 
+            suspendOnFault="false" 
             includes="${ipd.migrate.processes.suspendOnFault.false.includes}"
             excludes="${ipd.migrate.processes.suspendOnFault.false.excludes}"/>
-    	<copy todir="${transform.source.dir}" overwrite="true" verbose="true">
+        <copy todir="${transform.source.dir}" overwrite="true" verbose="true">
             <fileset dir="${transform.target.dir}"
                 includes="**/*.xml">
             </fileset>
@@ -292,13 +292,13 @@
                 if="${ipd.migrate.processes.suspendOnFault.enable}">
         <echo level="info">Updating Suspend on Fault - enabling</echo>
         <setSuspendOnFault 
-        	sourcedir="${transform.source.dir}" 
-        	targetdir="${transform.target.dir}" 
-        	suspendOnFault="true" 
+            sourcedir="${transform.source.dir}" 
+            targetdir="${transform.target.dir}" 
+            suspendOnFault="true" 
             includes="${ipd.migrate.processes.suspendOnFault.true.includes}"
             excludes="${ipd.migrate.processes.suspendOnFault.true.excludes}"/>
-    	<copy todir="${transform.source.dir}" overwrite="true" verbose="true">
-    		<fileset dir="${transform.target.dir}"
+        <copy todir="${transform.source.dir}" overwrite="true" verbose="true">
+            <fileset dir="${transform.target.dir}"
                 includes="**/*.xml">
             </fileset>
         </copy>
@@ -309,18 +309,18 @@
         <mkdir dir="${transform.target.dir}"/>
         <echo level="info">Updating Tracing Level ${migrate.tracingLevel}</echo>
         <setTracingLevel 
-        	sourcedir="${transform.source.dir}" 
-        	targetdir="${transform.target.dir}"
-        	properties="${release.properties}"  
-        	tracinglevel="${migrate.tracingLevel}" />
-    	<copy todir="${transform.source.dir}" overwrite="true" verbose="true">
+            sourcedir="${transform.source.dir}" 
+            targetdir="${transform.target.dir}"
+            properties="${release.properties}"  
+            tracinglevel="${migrate.tracingLevel}" />
+        <copy todir="${transform.source.dir}" overwrite="true" verbose="true">
             <fileset dir="${transform.target.dir}"
                 includes="**/*.xml">
             </fileset>
         </copy>
     </target>
     
-	
+    
     
     <!-- Removes specified tags in IPD designs using a regular expression, use the ipd.tags.remove.tagMatchPattern 
     to override default remove pattern (,)?(GIT:\w+) -->
@@ -422,20 +422,20 @@
 
     <target name="test_transform">
         <property 
-        	name="iics.release" 
-        	value="test_transfrom_all"/>
+            name="iics.release" 
+            value="test_transfrom_all"/>
         <property 
             name="transform.source.dir" 
             location="${basedir}/target/tmp/test_migrate_src"/>
         <property 
             name="transform.target.dir" 
             location="${basedir}/target/tmp/${iics.release}"/>
-    	<echo level="info">Copying Sources from ${basedir}/sample-data/src to temp Folder</echo>
-    	<copy todir="${basedir}/target/tmp/test_migrate_src" overwrite="true" verbose="true">
+        <echo level="info">Copying Sources from ${basedir}/sample-data/src to temp Folder</echo>
+        <copy todir="${basedir}/target/tmp/test_migrate_src" overwrite="true" verbose="true">
             <fileset dir="${basedir}/sample-data/src">
             </fileset>
         </copy>
-    	<antcall target="transform"></antcall>
+        <antcall target="transform"></antcall>
     </target>
     
     
@@ -505,7 +505,7 @@
             </xslt>
         </sequential>
     </macrodef>
-	
+    
     <macrodef name="openInDefaultBrowser">
         <attribute name="file"/>
         <attribute name="shell" default="${shell}"/>
@@ -519,5 +519,5 @@
             </exec>
         </sequential>
     </macrodef>
-	
+    
 </project>
