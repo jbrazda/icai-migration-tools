@@ -125,7 +125,11 @@
     </target>
 	
 	<target name="-transform.load.params">
+	    <condition property="iics.package.transform.config.available" >
+	        <available file="${iics.package.transform.config}"></available>
+	    </condition>
 		<echo level="info">Loading ${iics.package.transform.config}</echo>
+	    <fail unless="${iics.package.transform.config.available}" message="Unable to load the transfrom configuration file ${iics.package.transform.config} "/>
         <property file="${iics.package.transform.config}"/>
 	</target>
 	
