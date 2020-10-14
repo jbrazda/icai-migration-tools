@@ -140,6 +140,7 @@
         -transform.set.variables,
         -transform.processes.to.agent,
         -transform.processes.to.cloud,
+        -transform.connections.to.agent,
         -transform.set.process.tracingLevels,
         -transform.set.process.suspendOnFault,
         -transform.remove.tags"
@@ -206,6 +207,29 @@
         </copy>
     </target>
     
+    <target name="-transform.connections.to.agent" if="${ipd.migrate.connections.to.agent.enabled}">
+          <delete dir="${transform.target.dir}"/>
+          <mkdir dir="${transform.target.dir}"/>
+          <echo level="info">source: ${transform.source.dir}</echo>
+          <echo level="info">target: ${transform.target.dir}</echo>
+          <echo level="info">include: ${ipd.migrate.connections.to.agent.include}</echo>
+          <echo level="info">exclude: ${ipd.migrate.connections.to.agent.exclude}</echo>
+          <xslt style="${xsl.scripts.base}/move_connection_to_agent.xsl" 
+              basedir="${transform.source.dir}"
+              includes="${ipd.migrate.connections.to.agent.include}"
+              excludes="${ipd.migrate.connections.to.agent.exclude}"
+              extension=".xml"
+              destdir="${transform.target.dir}"
+              classpathref="tools.classpath">
+              <factory name="net.sf.saxon.TransformerFactoryImpl"/>
+              <param name="targetLocation" expression="${ipd.migrate.connections.to.agent.name}"/>
+          </xslt>
+          <copy todir="${transform.source.dir}" overwrite="true" verbose="true">
+              <fileset dir="${transform.target.dir}"
+                  includes="**/*.xml">
+              </fileset>
+          </copy>
+      </target>
     
     <target name="-transform.set.process.tracingLevels" 
         if="${ipd.migrate.processes.tracingLevelUpdate.enabled}">
@@ -378,6 +402,22 @@
             basedir="${transform.source.dir}" 
             destdir="${transform.target.dir}"
             includes="**/*.pd.xml,**/*.PROCESS.xml"
+            extension=".xml"
+            force="true"
+            classpathref="tools.classpath">
+            <factory name="net.sf.saxon.TransformerFactoryImpl"/>
+        </xslt>
+    </target>
+  
+  
+    <target name="test-move-connection-to-agent" depends="-init">
+        <property name="transform.source.dir" location="${basedir}/sample-data/src"/>
+        <property name="transform.target.dir" location="${basedir}/target/test-move-to-agent"/>
+        <mkdir dir="${transform.target.dir}"/>        
+        <xslt style="${xsl.scripts.base}/move_connection_to_agent.xsl" 
+            basedir="${transform.source.dir}" 
+            destdir="${transform.target.dir}"
+            includes="**/*.AI_CONNECTION.xml"
             extension=".xml"
             force="true"
             classpathref="tools.classpath">
