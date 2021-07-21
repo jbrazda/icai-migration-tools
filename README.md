@@ -280,7 +280,7 @@ This Tool provides two targets to manage `Run On` Parameter:
 
 ### Move Process from Secure Agent or agent deployment group to Cloud
 
-XSLT This Script does not have parameters
+XSLT - This Script does not have parameters
 
 [xsl/move_service_to_cloud.xsl](xsl/move_service_to_cloud.xsl)
 
