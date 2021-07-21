@@ -2,7 +2,7 @@
 
 This Project provides set of IICS Asset Transformation Utilities to automate common
 transition changes on Application Integration Design Assets. Transformations are mostly implemented
-using XSLT while providing Ant Scripting to run these transformations in platform independent way.
+using XSLT while providing Apache Ant Scripting to run these transformations in platform independent way.
 
 This Tool set uses the same XSLT Processor as Informatica Cloud Platform
 (Saxon) to provide consistent output for transformed designs
