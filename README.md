@@ -5,7 +5,7 @@ transition changes on Application Integration Design Assets. Transformations are
 using XSLT while providing Apache Ant Scripting to run these transformations in platform independent way.
 
 This Tool set uses the same XSLT Processor as Informatica Cloud Platform
-(Saxon) to provide consistent output for transformed designs
+(Saxon) to provide consistent output for transformed designs.
 
 ## Main Ant Script
 
