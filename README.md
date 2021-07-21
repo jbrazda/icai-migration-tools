@@ -9,7 +9,7 @@ This Tool set uses the same XSLT Processor as Informatica Cloud Platform
 
 ## Main Ant Script
 
-The [build.xml](build.xml) ant script provides targets to Transform Expanded Designs in the directory
+The [build.xml](https://github.com/jbrazda/icai-migration-tools/blob/master/build.xml) ant script provides targets to Transform Expanded Designs in the directory
 
 It has following main targets
 
