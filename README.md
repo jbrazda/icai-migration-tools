@@ -24,11 +24,11 @@ Main targets:
 Default target: help
 ```
 
-Use the `transform` target to execute all migration transformations in one step sequentially
+Use the `transform` target to execute all migration transformations in one step sequentially.
 
 The transformation process relies on Externally provided properties or property file which
 enable/disable individual transformation steps and configure which designs should undergo specific
-transformation and what will be transformation parameters
+transformation and what will be transformation parameters.
 
 ### Example Transformation Configuration
 
@@ -117,7 +117,7 @@ ipd.tags.remove.tagMatchPattern=(,)?(GIT:\w+)
 
 ### Invoking transform from Main Build Script of Your IICS component Build
 
-Following is an example snippet how this transformation can be called from main Build Script
+Following is an example snippet how this transformation can be called from main Build Script.
 
 #### Key properties to drive invocation of transform Target
 
