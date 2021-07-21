@@ -161,7 +161,7 @@ This transformation allows to bulk change this IPD process parameter when necess
 for example in test environments processes are left to fault on unexpected errors but in production
 they might be set to suspend on Fault which allows longer time to inspect them for root cause of
 failure or take corrective actions manually and resume process to running state.
-Successful resuming might also need elevated Persistence level.  
+Successful resuming might also need elevated [persistence level][persistence_level].  
 
 ### Suspend On Fault XSLT
 
@@ -199,8 +199,8 @@ Successful resuming might also need elevated Persistence level.
 
 Select a Tracing Level from this list to determine the corresponding persistence and
 logging level settings: None, Terse, Normal, Verbose. See the table below for more information.
-The Tracing Level of a process implemented using Process Designer couples the Persistence and
-Logging levels that are handled separately by Process Developer.
+The Tracing Level of a process implemented using Process Designer couples the [Persistence][persistence_level] and
+[Logging levels][logging_level] that are handled separately by Process Developer.
 
 | Tracing Level | Persistence Level | Logging Level               |
 |---------------|-------------------|-----------------------------|
@@ -304,3 +304,5 @@ XSLT This Script does not have parameters
 ```
 
 [suspend_on_fault]: https://network.informatica.com/onlinehelp/activevos/current/index.htm#page/bb-av-designer/Suspending_a_Process_on_Uncaught_Faults.html
+[persistence_level]: https://docs.informatica.com/process-automation/informatica-activevos/current-version/5-----administration-console/catalog--reports--and-custom-faults/viewing-process-definitions/process-version-persistence-type.html
+[logging_level]: https://docs.informatica.com/process-automation/informatica-activevos/current-version/5-----administration-console/catalog--reports--and-custom-faults/viewing-process-definitions/logging-level.html
