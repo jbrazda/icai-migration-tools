@@ -87,6 +87,20 @@ ipd.migrate.processes.to.agent.include=**/*NA.PROCESS.xml
 # you can exclude specified files from
 ipd.migrate.processes.to.agent.exclude=**/SCH-*.PROCESS.xml
 
+# MOVE Connections to Agent
+# -----------------------
+# Set this property to Enable/Disable Transform Step
+ipd.migrate.connections.to.agent.enabled=false
+# specify target Agent Name or Agent Group Name to Migrate to
+ipd.migrate.connections.to.agent.name=G01
+# Use this property to include specific connections or use Ant pattern expressions. **/*.AI_CONNECTION.xml
+ipd.migrate.connections.to.agent.include=Explore/Logging/Connections/IPaaS-Logging.AI_CONNECTION.xml\
+,Explore/Logging/Connections/SA-Process-DB.AI_CONNECTION.xml\
+,Explore/Tools/Connections/Email.AI_CONNECTION.xml\
+,Explore/Tools/Connections/AgentFileWriter.AI_CONNECTION.xml\
+,Explore/Tools/Connections/IPaaS-Configuration-DB.AI_CONNECTION.xml
+# you can exclude specified files from 
+ipd.migrate.connections.to.agent.exclude=Explore/Tools/Connections/github-gist.AI_CONNECTION.xml
 
 # SET Process Tracing Levels
 # -----------------------
@@ -138,6 +152,22 @@ ipd.migrate.removeTags=false
 ipd.tags.remove.include=**/*.xml
 ipd.tags.remove.exclude=
 ipd.tags.remove.tagMatchPattern=(,)?(GIT:\w+)
+
+# ADD Design Tags
+ipd.migrate.addTags=true
+ipd.tags.add.include=**/*.xml
+ipd.tags.add.exclude=
+ipd.tags.add.tags=TEST,for migration,version: 1.0 
+
+## Apply Version Update to Selected CAI designs
+ipd.migrate.updateVersions=true
+# Include files
+ipd.update.version.include=**/**.xml
+# Exclude files
+ipd.update.version.exclude=**/**.xml
+# you can exclude specified files from 
+ipd.update.version.label=1.0
+
 ```
 
 ### Invoking transform from Main Build Script of Your IICS component Build
