@@ -5,9 +5,10 @@
       <types1:Name>Email-Alerts</types1:Name>
       <types1:ParentFlowIds>1ZSAP38nXxpr1Iw-gt-2226508-2019-08-28T20:06:28.41Z::pd.xml,spiRASmvD4teIss-gt-2649660-2019-08-28T20:13:28.304Z::pd.xml</types1:ParentFlowIds>
       <types1:MimeType>application/xml+connection</types1:MimeType>
-      <types1:Description>Shared Email Service to send  alerts and notifications</types1:Description>
+      <types1:Description>Shared Email Service to send alerts and notifications
+version: 1.0</types1:Description>
       <types1:AppliesTo/>
-      <types1:Tags/>
+      <types1:Tags>TEST,for migration,version: 1.0 </types1:Tags>
       <types1:VersionLabel>1.0</types1:VersionLabel>
       <types1:State>CURRENT</types1:State>
       <types1:ProcessGroup/>
@@ -25,8 +26,9 @@
                      displayName="Email-Alerts"
                      label="Email-Alerts"
                      name="Email-Alerts">
-            <description>Shared Email Service to send  alerts and notifications</description>
-            <tags/>
+            <description>Shared Email Service to send  alerts and notifications
+version: 1.0</description>
+            <tags>TEST,for migration,version: 1.0 </tags>
             <agent/>
             <attributes>
                <attribute encrypted="false" name="Authentication" value="Enable"/>

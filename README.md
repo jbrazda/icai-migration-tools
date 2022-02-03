@@ -1,5 +1,30 @@
 # Informatica IICS-CAI Migration Tools
 
+<!-- TOC -->
+
+- [Informatica IICS-CAI Migration Tools](#informatica-iics-cai-migration-tools)
+  - [Main Ant Script](#main-ant-script)
+    - [Example Transformation Configuration](#example-transformation-configuration)
+    - [Invoking transform from Main Build Script of Your IICS component Build](#invoking-transform-from-main-build-script-of-your-iics-component-build)
+      - [Key properties to drive invocation of transform Target](#key-properties-to-drive-invocation-of-transform-target)
+      - [Example Target Implementation in Main Build](#example-target-implementation-in-main-build)
+  - [Set Process Suspend On Fault Deployment Attributes](#set-process-suspend-on-fault-deployment-attributes)
+    - [Suspend On Fault XSLT](#suspend-on-fault-xslt)
+    - [Parameters](#parameters)
+    - [Example use in Ant](#example-use-in-ant)
+  - [Set Process Tracing Level Attribute](#set-process-tracing-level-attribute)
+    - [XSLT Set Tracing Level](#xslt-set-tracing-level)
+    - [Parameters](#parameters-1)
+  - [Example use in Ant](#example-use-in-ant-1)
+  - [Setting Run On Parameter of the Process](#setting-run-on-parameter-of-the-process)
+    - [Move Process to different agent or group](#move-process-to-different-agent-or-group)
+    - [Example Use in Ant](#example-use-in-ant-2)
+    - [Move Process from Secure Agent or agent deployment group to Cloud](#move-process-from-secure-agent-or-agent-deployment-group-to-cloud)
+    - [Example Use in Ant](#example-use-in-ant-3)
+  - [Licenses anf Credits](#licenses-anf-credits)
+
+<!-- /TOC -->
+
 This Project provides set of IICS Asset Transformation Utilities to automate common
 transition changes on Application Integration Design Assets. Transformations are mostly implemented
 using XSLT while providing Apache Ant Scripting to run these transformations in platform independent way.
@@ -302,6 +327,13 @@ XSLT - This Script does not have parameters
     </xslt>
 </target>
 ```
+
+## Licenses anf Credits
+
+This Tool uses Saxon HE and Ant Contrib libraries
+
+- Saxon HE is licensed under [Mozilla Public License Version 2.0](https://www.mozilla.org/en-US/MPL/2.0/)
+- Ant Contrib is licensed under [Apache License Version 2.0](lib/ant-contrib-LICENSE)
 
 [suspend_on_fault]: https://network.informatica.com/onlinehelp/activevos/current/index.htm#page/bb-av-designer/Suspending_a_Process_on_Uncaught_Faults.html
 [persistence_level]: https://docs.informatica.com/process-automation/informatica-activevos/current-version/5-----administration-console/catalog--reports--and-custom-faults/viewing-process-definitions/process-version-persistence-type.html

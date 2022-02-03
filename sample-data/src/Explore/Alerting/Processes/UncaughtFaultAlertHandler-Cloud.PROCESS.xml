@@ -4,9 +4,10 @@
       <types1:EntryId>1ZSAP38nXxpr1Iw-gt-2226508-2019-08-28T20:06:28.41Z::pd.xml</types1:EntryId>
       <types1:Name>UncaughtFaultAlertHandler-Cloud</types1:Name>
       <types1:MimeType>application/xml+process</types1:MimeType>
-      <types1:Description>Process Engine Fault Alert handler allows to send notifcations based on declarative conditions Faults can be ignored</types1:Description>
+      <types1:Description>Process Engine Fault Alert handler allows to send notifcations based on declarative conditions Faults can be ignored
+version: 1.0</types1:Description>
       <types1:AppliesTo/>
-      <types1:Tags/>
+      <types1:Tags>,.agent:NA,TEST,for migration,version: 1.0 </types1:Tags>
       <types1:VersionLabel>1.0</types1:VersionLabel>
       <types1:State>CURRENT</types1:State>
       <types1:ProcessGroup/>
@@ -25,8 +26,9 @@
                   displayName="UncaughtFaultAlertHandler-Cloud"
                   name="UncaughtFaultAlertHandler-Cloud">
             <appliesTo/>
-            <description>Process Engine Fault Alert handler allows to send notifcations based on declarative conditions Faults can be ignored</description>
-            <tags/>
+            <description>Process Engine Fault Alert handler allows to send notifcations based on declarative conditions Faults can be ignored
+version: 1.0</description>
+            <tags>,.agent:NA,TEST,for migration,version: 1.0 </tags>
             <generator>Informatica Process Designer 11</generator>
             <input>
                <parameter description="" name="Alert Details" type="reference">
@@ -252,7 +254,9 @@
                </field>
             </tempFields>
             <notes/>
-            <deployment suspendOnFault="false" tracingLevel="verbose">
+            <deployment suspendOnFault="true" tracingLevel="none">
+               <targetLocation xmlns:sfd="http://schemas.active-endpoints.com/appmodules/screenflow/2010/10/avosScreenflow.xsd"
+                               xmlns:rep="http://schemas.active-endpoints.com/appmodules/repository/2010/10/avrepository.xsd">NA</targetLocation>
                <event eventSource="System Events:Runtime Alert Service"/>
             </deployment>
             <flow id="a">

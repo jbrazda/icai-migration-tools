@@ -2,17 +2,21 @@
 <project name="IICS Asset Migration Utilities" basedir="." default="help">
 
     <target name="help" description="help - describes how to use this script" depends="-env.info">
+    	<property name="help.file" location="${basedir}/README.md" />
         <echo level="info">This ant script provides set of IICS Asset Transformation Utilities such as:</echo>
         <echo level="info"> - Set Process SuspendOnfault Deployment Aattributes</echo>
         <echo level="info"> - Set Process Tracing Level Attribute</echo>
         <echo level="info"> - Move Process to different agent or group</echo>
         <echo level="info"> - Move Process Agemt to Cloud</echo>
-        <echo level="info">Read the doc/README.MD or README.html for more details</echo>
+    	<echo level="info"> - Add/Update Version Label in Design Descriptions</echo>
+    	<echo level="info"> - Remove Design Tags</echo>
+    	<echo level="info"> - Add Design Tags</echo>
+        <echo level="info">Read the ${help.file} for more details</echo>
         <echo level="info">use ant -projecthelp to see available targets</echo>
-        <property name="help.file" value="${basedir}/README.html" />
+        <echo level="info">${shell} ${shell.options} '${shell.open} ${help.file}'</echo>
         <exec executable="${shell}" spawn="yes">
             <arg value="${shell.options}" />
-            <arg value='${shell.open} "${help.file}"' />        
+            <arg value="${shell.open} ${help.file}" />        
         </exec>
     </target>
 
@@ -49,6 +53,13 @@
         <condition property="shell.open" value=" open ">
             <os name="Mac OS X"/>
         </condition>
+    	
+    	<condition property="shell.open" value=" wslview ">
+            <and> <!-- Detecting WSL Linux runtime to open urls in windows default browser in wsl runtime -->
+                <os name="Linux"/>
+                <contains string="${os.version}" substring="WSL" />
+            </and>
+        </condition>
         
         <property name="shell.open" value=""/>
         
@@ -76,7 +87,7 @@
     
     <target name="build.dist"
         depends="-init,-env.info"
-        description="Build Migration Utility Distribution File with Sources (Deprecate) Use github releases instead">
+        description="Build Migration Utility Distribution File with Sources (Deprecated) Use github releases instead">
         <delete verbose="true">
             <fileset dir="${basedir}/dist">
                 <include name="*.zip"/>
@@ -143,7 +154,9 @@
         -transform.connections.to.agent,
         -transform.set.process.tracingLevels,
         -transform.set.process.suspendOnFault,
-        -transform.remove.tags"
+    	-transform.update.version,
+        -transform.remove.tags,
+    	-transform.add.tags"
         description="Migrate IPD Exported Archive from one environment to another">
     </target>
     
@@ -243,7 +256,6 @@
             <param name="release.properties">${iics.package.transform.config}</param>
         </foreach>
     </target>
-
     
     
     <target name="-transform.set.process.suspendOnFault" 
@@ -375,6 +387,57 @@
             </fileset>
         </copy>
     </target>
+	
+	<!-- Add specified tags in IPD designs using ipd.tags.add.tags property -->
+	    <target name="-transform.add.tags" if="${ipd.migrate.addTags}">
+	        <delete dir="${transform.target.dir}"/>
+	        <mkdir dir="${transform.target.dir}"/>
+	        <echo level="info">source: ${transform.source.dir}</echo>
+	        <echo level="info">target: ${transform.target.dir}</echo>
+	        <property name="ipd.tags.add.include" value="**/*.xml"/>
+	        <property name="ipd.tags.add.exclude" value=""/>
+	        <property name="ipd.tags.add.tags" value="${ipd.tags.add.tags}"/>
+	        <echo level="info">include: ${ipd.tags.add.include}</echo>
+	        <echo level="info">exclude: ${ipd.tags.add.exclude}</echo>
+	        <xslt style="${xsl.scripts.base}/add_tags.xsl" 
+	            basedir="${transform.source.dir}"
+	            includes="${ipd.tags.add.include}"
+	            excludes="${ipd.tags.add.exclude}"
+	            extension=".xml"
+	            destdir="${transform.target.dir}"
+	            classpathref="tools.classpath">
+	            <factory name="net.sf.saxon.TransformerFactoryImpl"/>
+	            <param name="tags" expression="${ipd.tags.add.tags}"/>
+	        </xslt>
+	        <copy todir="${transform.source.dir}" overwrite="true" verbose="true">
+	            <fileset dir="${transform.target.dir}"
+	                includes="${ipd.tags.add.include}"
+	                excludes="${ipd.tags.add.exclude}">
+	            </fileset>
+	        </copy>
+	    </target>
+	
+    <!-- Removes specified tags in IPD designs using a regular expression, use the ipd.update.version.label
+    to override default 1.0 -->
+    <target name="-transform.update.version" if="${ipd.migrate.updateVersions}">
+        <delete dir="${transform.target.dir}"/>
+        <mkdir dir="${transform.target.dir}"/>
+        <echo level="info">source: ${transform.source.dir}</echo>
+        <echo level="info">target: ${transform.target.dir}</echo>
+        <property name="ipd.update.version.include" value="**/*.xml"/>
+        <property name="ipd.update.version.exclude" value=""/>
+        <property name="ipd.update.version.label" value="1.0"/>
+        <echo level="info">include: ${ipd.update.version.include}</echo>
+        <echo level="info">exclude: ${ipd.update.version.exclude}</echo>
+        <xslt style="${xsl.scripts.base}/update_description_version.xsl" basedir="${transform.source.dir}" includes="${ipd.update.version.include}" excludes="${ipd.update.version.exclude}" extension=".xml" destdir="${transform.target.dir}" classpathref="tools.classpath">
+            <factory name="net.sf.saxon.TransformerFactoryImpl"/>
+            <param name="designVersion" expression="${ipd.update.version.label}"/>
+        </xslt>
+        <copy todir="${transform.source.dir}" overwrite="true" verbose="true">
+            <fileset dir="${transform.target.dir}" includes="${ipd.update.version.include}" excludes="${ipd.update.version.exclude}">
+            </fileset>
+        </copy>
+    </target>
 
 
     <target name="test-move-to-agent" depends="-init,-env.info">
@@ -408,8 +471,38 @@
             <factory name="net.sf.saxon.TransformerFactoryImpl"/>
         </xslt>
     </target>
-  
-  
+	
+	 <target name="test-update-version" depends="-init">
+        <property name="transform.source.dir" location="${basedir}/sample-data/src"/>
+        <property name="transform.target.dir" location="${basedir}/target/update-version"/>
+        <mkdir dir="${transform.target.dir}"/>        
+        <xslt style="${xsl.scripts.base}/update_description_version.xsl" 
+            basedir="${transform.source.dir}" 
+            destdir="${transform.target.dir}"
+            includes="**/*.xml"
+            extension=".xml"
+            force="true"
+            classpathref="tools.classpath">
+            <factory name="net.sf.saxon.TransformerFactoryImpl"/>
+        </xslt>
+    </target>
+	
+	<target name="test-add-tags" depends="-init">
+        <property name="transform.source.dir" location="${basedir}/sample-data/src"/>
+        <property name="transform.target.dir" location="${basedir}/target/add-tags"/>
+        <mkdir dir="${transform.target.dir}"/>        
+        <xslt style="${xsl.scripts.base}/add_tags.xsl" 
+            basedir="${transform.source.dir}" 
+            destdir="${transform.target.dir}"
+            includes="**/*.xml"
+            extension=".xml"
+            force="true"
+            classpathref="tools.classpath">
+            <factory name="net.sf.saxon.TransformerFactoryImpl"/>
+
+        </xslt>
+    </target>
+    
     <target name="test-move-connection-to-agent" depends="-init">
         <property name="transform.source.dir" location="${basedir}/sample-data/src"/>
         <property name="transform.target.dir" location="${basedir}/target/test-move-to-agent"/>
@@ -470,7 +563,7 @@
         <property 
             name="transform.target.dir" 
             location="${basedir}/target/tmp/${iics.release}"/>
-        <echo level="info">Copying Sources from ${basedir}/sample-data/src to temp Folder</echo>
+        <echo level="info">Copying Sources from ${basedir}/sample-data/src to temp ${basedir}/target/tmp/test_migrate_src</echo>
         <copy todir="${basedir}/target/tmp/test_migrate_src" overwrite="true" verbose="true">
             <fileset dir="${basedir}/sample-data/src">
             </fileset>

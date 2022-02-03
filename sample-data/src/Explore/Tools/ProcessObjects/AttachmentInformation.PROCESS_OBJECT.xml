@@ -5,9 +5,10 @@
       <types1:Name>AttachmentInformation</types1:Name>
       <types1:ParentFlowIds>kL0jmu6lS01BchM-gt-2183732-2019-08-28T21:15:08.716Z::pd.xml</types1:ParentFlowIds>
       <types1:MimeType>application/xml+processobject</types1:MimeType>
-      <types1:Description>Attachment Object Information Holder</types1:Description>
+      <types1:Description>Attachment Object Information Holder
+version: 1.0</types1:Description>
       <types1:AppliesTo/>
-      <types1:Tags/>
+      <types1:Tags>TEST,for migration,version: 1.0 </types1:Tags>
       <types1:VersionLabel>1.0</types1:VersionLabel>
       <types1:State>CURRENT</types1:State>
       <types1:ProcessGroup/>
@@ -23,7 +24,7 @@
                         isByCopy="true"
                         name="AttachmentInformation">
             <description>Attachment Object Information Holder</description>
-            <tags/>
+            <tags>TEST,for migration,version: 1.0 </tags>
             <detail>
                <field label="FileName" name="FileName" type="string"/>
                <field label="Size" name="Size" type="int"/>

@@ -5,9 +5,10 @@
       <types1:Name>Github_Gist_Storage_Manager</types1:Name>
       <types1:ParentFlowIds>5Ihs9pNz6HKoJBU-gt-4288779-2019-06-19T14:17:32.914Z::gt.xml</types1:ParentFlowIds>
       <types1:MimeType>application/xml+screenflow</types1:MimeType>
-      <types1:Description>Guide Save/Load/List Configurations Stored as Github Gist</types1:Description>
+      <types1:Description>Guide Save/Load/List Configurations Stored as Github Gist
+version: 1.0</types1:Description>
       <types1:AppliesTo/>
-      <types1:Tags/>
+      <types1:Tags>TEST,for migration,version: 1.0 </types1:Tags>
       <types1:VersionLabel>1.0</types1:VersionLabel>
       <types1:State>CURRENT</types1:State>
       <types1:ProcessGroup/>
@@ -30,7 +31,7 @@
                          runAsUser="$current">
             <description>Guide Save/Load/List Configurations Stored as Github Gist</description>
             <appliesTo/>
-            <tags/>
+            <tags>TEST,for migration,version: 1.0 </tags>
             <generator>Informatica Process Designer 11</generator>
             <input>
                <parameter description="Action "

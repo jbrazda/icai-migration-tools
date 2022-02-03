@@ -4,9 +4,10 @@
       <types1:EntryId>5Ihs9pNz6HKoJBU-gt-4288779-2019-06-19T14:17:32.914Z::gt.xml</types1:EntryId>
       <types1:Name>Alert_Configuration_Manager</types1:Name>
       <types1:MimeType>application/xml+screenflow</types1:MimeType>
-      <types1:Description>This guide provides set of tools to manage, generate and test Fault Alert Service Configuration</types1:Description>
+      <types1:Description>This guide provides set of tools to manage, generate and test Fault Alert Service Configuration
+version: 1.0</types1:Description>
       <types1:AppliesTo/>
-      <types1:Tags/>
+      <types1:Tags>TEST,for migration,version: 1.0 </types1:Tags>
       <types1:VersionLabel>1.0</types1:VersionLabel>
       <types1:State>CURRENT</types1:State>
       <types1:ProcessGroup/>
@@ -29,7 +30,7 @@
                          runAsUser="$current">
             <description>This guide provides set of tools to manage, generate and test Fault Alert Service Configuration</description>
             <appliesTo/>
-            <tags/>
+            <tags>TEST,for migration,version: 1.0 </tags>
             <generator>Informatica Process Designer 11</generator>
             <tempFields>
                <field description="" name="tmp_alert_configuration" type="reference">

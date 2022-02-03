@@ -5,9 +5,11 @@
       <types1:Name>github-gist-alert-configuration</types1:Name>
       <types1:ParentFlowIds>AeN7Y3AxtPk7HNC-gt-4080771-2019-10-10T16:26:39.425Z::gt.xml,5Ihs9pNz6HKoJBU-gt-4288779-2019-06-19T14:17:32.914Z::gt.xml</types1:ParentFlowIds>
       <types1:MimeType>application/xml+connection</types1:MimeType>
-      <types1:Description>Github Gist API connection to manage Alert Service Configurations</types1:Description>
+      <types1:Description>Github Gist API connection to manage 
+Alert Service Configurations
+version: 1.0</types1:Description>
       <types1:AppliesTo/>
-      <types1:Tags/>
+      <types1:Tags>,.agent:NA,TEST,for migration,version: 1.0 </types1:Tags>
       <types1:VersionLabel>1.0</types1:VersionLabel>
       <types1:State>CURRENT</types1:State>
       <types1:ProcessGroup/>
@@ -25,9 +27,10 @@
                      displayName="github-gist-alert-configuration"
                      label="github-gist-alert-configuration"
                      name="github-gist-alert-configuration">
-            <description>Github Gist API connection to manage Alert Service Configurations</description>
-            <tags/>
-            <agent/>
+            <description>Github Gist API connection to manage Alert Service Configurations
+version: 1.0</description>
+            <tags>,.agent:NA,TEST,for migration,version: 1.0 </tags>
+            <agent>NA</agent>
             <attributes>
                <attribute encrypted="false" name="base_uri" value="https://api.github.com"/>
                <attribute encrypted="true" name="access_token" value=""/>
