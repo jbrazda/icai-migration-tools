@@ -1,24 +1,22 @@
 <aetgt:getResponse xmlns:aetgt="http://schemas.active-endpoints.com/appmodules/repository/2010/10/avrepository.xsd"
                    xmlns:types1="http://schemas.active-endpoints.com/appmodules/repository/2010/10/avrepository.xsd">
    <types1:Item>
-      <types1:EntryId>AeN7Y3AxtPk7HNC-gt-4080771-2019-10-10T16:26:39.425Z::gt.xml</types1:EntryId>
+      <types1:EntryId>Bxiggor3rp3yD7t-gt-7365277-2020-03-25T23:14:03.645Z::gt.xml</types1:EntryId>
       <types1:Name>Github_Gist_Storage_Manager</types1:Name>
-      <types1:ParentFlowIds>5Ihs9pNz6HKoJBU-gt-4288779-2019-06-19T14:17:32.914Z::gt.xml</types1:ParentFlowIds>
+      <types1:ParentFlowIds>aabbeJOSM8NciZB-gt-6346531-2020-03-25T23:14:04.901Z::gt.xml</types1:ParentFlowIds>
       <types1:MimeType>application/xml+screenflow</types1:MimeType>
-      <types1:Description>Guide Save/Load/List Configurations Stored as Github Gist
-version: 1.0</types1:Description>
+      <types1:Description>Guide Save/Load/List Configurations Stored as Github Gist</types1:Description>
       <types1:AppliesTo/>
-      <types1:Tags>TEST,for migration,version: 1.0 </types1:Tags>
+      <types1:Tags/>
       <types1:VersionLabel>1.0</types1:VersionLabel>
       <types1:State>CURRENT</types1:State>
       <types1:ProcessGroup/>
-      <types1:CreatedBy>jbrazda-iics@informatica.com</types1:CreatedBy>
-      <types1:CreationDate>2019-10-10T16:26:39Z</types1:CreationDate>
-      <types1:ModifiedBy>jbrazda-iics@informatica.com</types1:ModifiedBy>
-      <types1:ModificationDate>2019-10-11T13:02:13Z</types1:ModificationDate>
+      <types1:CreatedBy>jbrazda@unicosolution.com.dev</types1:CreatedBy>
+      <types1:CreationDate>2020-03-25T23:14:04Z</types1:CreationDate>
+      <types1:ModifiedBy/>
       <types1:PublicationStatus>published</types1:PublicationStatus>
-      <types1:PublishedBy>jbrazda-iics@informatica.com</types1:PublishedBy>
-      <types1:PublicationDate>2019-10-14T14:19:25Z</types1:PublicationDate>
+      <types1:PublishedBy>jbrazda@unicosolution.com.dev</types1:PublishedBy>
+      <types1:PublicationDate>2020-12-09T16:22:40Z</types1:PublicationDate>
       <types1:PublishedContributionId>project:/sf.Github_Gist_Storage_Manager/Github_Gist_Storage_Manager.xml</types1:PublishedContributionId>
       <types1:AutosaveExists>false</types1:AutosaveExists>
       <types1:Entry>
@@ -31,7 +29,7 @@ version: 1.0</types1:Description>
                          runAsUser="$current">
             <description>Guide Save/Load/List Configurations Stored as Github Gist</description>
             <appliesTo/>
-            <tags>TEST,for migration,version: 1.0 </tags>
+            <tags/>
             <generator>Informatica Process Designer 11</generator>
             <input>
                <parameter description="Action "
@@ -61,7 +59,7 @@ version: 1.0</types1:Description>
                      <option name="referenceTo">github-gist-alert-configuration:createGist</option>
                      <option name="required">false</option>
                      <option name="isCopy">true</option>
-                     <option name="guid">2AJJfAJqQLkaZMytvRBVWR</option>
+                     <option name="guid">2fJdGOrTzrteLpPrsXudqG</option>
                   </options>
                </parameter>
                <parameter description="Gist ID is required for 'Load' Action"
@@ -93,7 +91,7 @@ version: 1.0</types1:Description>
                      <option name="referenceTo">github-gist-alert-configuration:gist</option>
                      <option name="required">false</option>
                      <option name="isCopy">true</option>
-                     <option name="guid">2AJJfAJqQLkaZMytvRBVWR</option>
+                     <option name="guid">2fJdGOrTzrteLpPrsXudqG</option>
                   </options>
                </field>
                <field description="" name="tmp_update_gist" type="reference">
@@ -101,7 +99,7 @@ version: 1.0</types1:Description>
                      <option name="referenceTo">github-gist-alert-configuration:gist</option>
                      <option name="required">false</option>
                      <option name="isCopy">true</option>
-                     <option name="guid">2AJJfAJqQLkaZMytvRBVWR</option>
+                     <option name="guid">2fJdGOrTzrteLpPrsXudqG</option>
                   </options>
                </field>
             </tempFields>
@@ -554,7 +552,7 @@ version: 1.0</types1:Description>
                <service id="k1l0sdec">
                   <title>createGist</title>
                   <serviceName>github-gist-alert-configuration:createGist</serviceName>
-                  <serviceGUID>2AJJfAJqQLkaZMytvRBVWR</serviceGUID>
+                  <serviceGUID>2fJdGOrTzrteLpPrsXudqG</serviceGUID>
                   <serviceInput>
                      <parameter id="k1l0s85w" name="gist" source="field" updatable="false">input.in_gist_meta</parameter>
                   </serviceInput>
@@ -567,7 +565,7 @@ version: 1.0</types1:Description>
                <service id="k1l0sd0y">
                   <title>getUserProfile Update</title>
                   <serviceName>github-gist-alert-configuration:getUserProfile</serviceName>
-                  <serviceGUID>2AJJfAJqQLkaZMytvRBVWR</serviceGUID>
+                  <serviceGUID>2fJdGOrTzrteLpPrsXudqG</serviceGUID>
                   <actions>
                      <action alt="" id="k1l0sd0y_k1l0sd1x" targetScreen="k1l0sd1x">
                         <text>Continue</text>
@@ -577,7 +575,7 @@ version: 1.0</types1:Description>
                <service id="k1l0sd1x">
                   <title>getUserGists Update</title>
                   <serviceName>github-gist-alert-configuration:getUserGists</serviceName>
-                  <serviceGUID>2AJJfAJqQLkaZMytvRBVWR</serviceGUID>
+                  <serviceGUID>2fJdGOrTzrteLpPrsXudqG</serviceGUID>
                   <serviceInput>
                      <parameter id="k1l0si9w" name="user" source="field" updatable="true">output.githubUserProfile[1]/login</parameter>
                   </serviceInput>
@@ -590,7 +588,7 @@ version: 1.0</types1:Description>
                <service id="k1l0sd35">
                   <title>getGist for Update</title>
                   <serviceName>github-gist-alert-configuration:getGist</serviceName>
-                  <serviceGUID>2AJJfAJqQLkaZMytvRBVWR</serviceGUID>
+                  <serviceGUID>2fJdGOrTzrteLpPrsXudqG</serviceGUID>
                   <serviceInput>
                      <parameter id="k1l0sfga" name="gist_id" source="field" updatable="true">temp.tmp_selected_gist[1]/id</parameter>
                   </serviceInput>
@@ -603,7 +601,7 @@ version: 1.0</types1:Description>
                <service id="k1l0sd5t">
                   <title>updateGist</title>
                   <serviceName>github-gist-alert-configuration:updateGist</serviceName>
-                  <serviceGUID>2AJJfAJqQLkaZMytvRBVWR</serviceGUID>
+                  <serviceGUID>2fJdGOrTzrteLpPrsXudqG</serviceGUID>
                   <serviceInput>
                      <parameter id="k1l0sfgh" name="gist_id" source="field" updatable="true">temp.tmp_selected_gist[1]/id</parameter>
                      <parameter id="k1l0sfgi" name="gist" source="formula" updatable="false">xpath $temp.tmp_update_gist </parameter>
@@ -617,7 +615,7 @@ version: 1.0</types1:Description>
                <service id="k1l0scxz">
                   <title>getGist  by ID</title>
                   <serviceName>github-gist-alert-configuration:getGist</serviceName>
-                  <serviceGUID>2AJJfAJqQLkaZMytvRBVWR</serviceGUID>
+                  <serviceGUID>2fJdGOrTzrteLpPrsXudqG</serviceGUID>
                   <serviceInput>
                      <parameter id="k1l0s70z" name="gist_id" source="field" updatable="true">input.in_gist_id</parameter>
                   </serviceInput>
@@ -630,7 +628,7 @@ version: 1.0</types1:Description>
                <service id="k1kwvm5v">
                   <title>getUserProfile</title>
                   <serviceName>github-gist-alert-configuration:getUserProfile</serviceName>
-                  <serviceGUID>2AJJfAJqQLkaZMytvRBVWR</serviceGUID>
+                  <serviceGUID>2fJdGOrTzrteLpPrsXudqG</serviceGUID>
                   <actions>
                      <action alt="null" id="k1kwvm5v_k1kwvm7c" targetScreen="k1kwvm7c">
                         <text>Continue</text>
@@ -640,7 +638,7 @@ version: 1.0</types1:Description>
                <service id="k1kwvm7c">
                   <title>getUserGists List</title>
                   <serviceName>github-gist-alert-configuration:getUserGists</serviceName>
-                  <serviceGUID>2AJJfAJqQLkaZMytvRBVWR</serviceGUID>
+                  <serviceGUID>2fJdGOrTzrteLpPrsXudqG</serviceGUID>
                   <serviceInput>
                      <parameter id="k1l0si9w" name="user" source="field" updatable="true">output.githubUserProfile[1]/login</parameter>
                   </serviceInput>
@@ -653,7 +651,7 @@ version: 1.0</types1:Description>
                <service id="k1ky67ay">
                   <title>getGist</title>
                   <serviceName>github-gist-alert-configuration:getGist</serviceName>
-                  <serviceGUID>2AJJfAJqQLkaZMytvRBVWR</serviceGUID>
+                  <serviceGUID>2fJdGOrTzrteLpPrsXudqG</serviceGUID>
                   <serviceInput>
                      <parameter id="k1kzx3g2" name="gist_id" source="field" updatable="true">temp.tmp_selected_gist[1]/id</parameter>
                   </serviceInput>
@@ -811,8 +809,8 @@ return
             </flow>
          </avosScreenflow>
       </types1:Entry>
-      <types1:GUID>5e8SOtOzInDhHjnm8F298G</types1:GUID>
+      <types1:GUID>5HkyjCqUbvYfzsgmI7fwcw</types1:GUID>
       <types1:DisplayName>Github Gist Storage Manager</types1:DisplayName>
    </types1:Item>
-   <types1:CurrentServerDateTime>2019-10-14T16:29:47.321Z</types1:CurrentServerDateTime>
+   <types1:CurrentServerDateTime>2021-09-23T20:43:55.745Z</types1:CurrentServerDateTime>
 </aetgt:getResponse>

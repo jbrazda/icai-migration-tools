@@ -475,15 +475,17 @@
 	 <target name="test-update-version" depends="-init">
         <property name="transform.source.dir" location="${basedir}/sample-data/src"/>
         <property name="transform.target.dir" location="${basedir}/target/update-version"/>
+	 	<delete dir="${transform.target.dir}" />
         <mkdir dir="${transform.target.dir}"/>        
         <xslt style="${xsl.scripts.base}/update_description_version.xsl" 
             basedir="${transform.source.dir}" 
             destdir="${transform.target.dir}"
-            includes="**/*.xml"
+            includes="**/**.xml"
             extension=".xml"
             force="true"
             classpathref="tools.classpath">
             <factory name="net.sf.saxon.TransformerFactoryImpl"/>
+        	<param name="designVersion" expression="2.0"/>
         </xslt>
     </target>
 	

@@ -1,24 +1,23 @@
 <aetgt:getResponse xmlns:aetgt="http://schemas.active-endpoints.com/appmodules/repository/2010/10/avrepository.xsd"
                    xmlns:types1="http://schemas.active-endpoints.com/appmodules/repository/2010/10/avrepository.xsd">
    <types1:Item>
-      <types1:EntryId>uwSSp7aa-gt-6298602-2019-06-21T17:27:21.337Z::conn.xml</types1:EntryId>
+      <types1:EntryId>6UuINciZBpDUQbg-gt-2341642-2020-03-25T23:14:00.893Z::conn.xml</types1:EntryId>
       <types1:Name>Email-Alerts</types1:Name>
-      <types1:ParentFlowIds>1ZSAP38nXxpr1Iw-gt-2226508-2019-08-28T20:06:28.41Z::pd.xml,spiRASmvD4teIss-gt-2649660-2019-08-28T20:13:28.304Z::pd.xml</types1:ParentFlowIds>
+      <types1:ParentFlowIds>cgp5OjG4abck0Kn-gt-5013926-2020-04-23T17:34:19.03Z::pd.xml,GlBghNf4TsrT2ht-gt-6346513-2020-03-25T23:14:04.52Z::pd.xml</types1:ParentFlowIds>
       <types1:MimeType>application/xml+connection</types1:MimeType>
-      <types1:Description>Shared Email Service to send alerts and notifications
-version: 1.0</types1:Description>
+      <types1:Description>Shared Email Service to send  alerts and notifications</types1:Description>
       <types1:AppliesTo/>
-      <types1:Tags>TEST,for migration,version: 1.0 </types1:Tags>
+      <types1:Tags/>
       <types1:VersionLabel>1.0</types1:VersionLabel>
       <types1:State>CURRENT</types1:State>
       <types1:ProcessGroup/>
-      <types1:CreatedBy>jbrazda-iics@informatica.com</types1:CreatedBy>
-      <types1:CreationDate>2019-06-21T17:27:21Z</types1:CreationDate>
-      <types1:ModifiedBy>jbrazda-iics@informatica.com</types1:ModifiedBy>
-      <types1:ModificationDate>2019-09-05T21:15:36Z</types1:ModificationDate>
+      <types1:CreatedBy>jbrazda@unicosolution.com.dev</types1:CreatedBy>
+      <types1:CreationDate>2020-03-25T23:14:01Z</types1:CreationDate>
+      <types1:ModifiedBy>jbrazda@unicosolution.com.dev</types1:ModifiedBy>
+      <types1:ModificationDate>2021-05-25T13:52:58Z</types1:ModificationDate>
       <types1:PublicationStatus>published</types1:PublicationStatus>
-      <types1:PublishedBy>jbrazda-iics@informatica.com</types1:PublishedBy>
-      <types1:PublicationDate>2019-10-08T16:15:19Z</types1:PublicationDate>
+      <types1:PublishedBy>jbrazda@unicosolution.com.dev</types1:PublishedBy>
+      <types1:PublicationDate>2021-05-25T13:53:12Z</types1:PublicationDate>
       <types1:PublishedContributionId>project:/rt.connection/Email-Alerts/Email-Alerts.conn.xml</types1:PublishedContributionId>
       <types1:AutosaveExists>false</types1:AutosaveExists>
       <types1:Entry>
@@ -26,24 +25,23 @@ version: 1.0</types1:Description>
                      displayName="Email-Alerts"
                      label="Email-Alerts"
                      name="Email-Alerts">
-            <description>Shared Email Service to send  alerts and notifications
-version: 1.0</description>
-            <tags>TEST,for migration,version: 1.0 </tags>
+            <description>Shared Email Service to send  alerts and notifications</description>
+            <tags/>
             <agent/>
             <attributes>
                <attribute encrypted="false" name="Authentication" value="Enable"/>
                <attribute encrypted="false" name="hostName" value="smtp.office365.com"/>
                <attribute encrypted="false" name="port" value="587"/>
-               <attribute encrypted="false" name="username" value="jbrazda@informatica.com"/>
+               <attribute encrypted="false"
+                          name="username"
+                          value="nrr-iics-alerts_svc@huronconsultinggroup.com"/>
                <attribute encrypted="true" name="password" value=""/>
                <attribute encrypted="false" name="security" value="TLS"/>
                <attribute encrypted="false" name="connectionTimeout" value="30000"/>
-               <attribute encrypted="false"
-                          name="testToAddress"
-                          value="jbrazda@informatica.com"/>
+               <attribute encrypted="false" name="testToAddress" value="jbrazda@hcg.com"/>
                <attribute encrypted="false"
                           name="fromAddress"
-                          value="jbrazda@informatica.com"/>
+                          value="noreply-iics-alerts@hcg.com"/>
             </attributes>
             <javaConnector xmlns="http://schemas.informatica.com/appmodules/screenflow/2014/04/avosConnectors.xsd"
                            agentOnly="false"
@@ -57,8 +55,8 @@ version: 1.0</description>
             </javaConnector>
          </connection>
       </types1:Entry>
-      <types1:GUID>cOur0Hdz9oshd8U7LIuIiD</types1:GUID>
+      <types1:GUID>6kW78Fn72hzjZXV0oFE5am</types1:GUID>
       <types1:DisplayName>Email-Alerts</types1:DisplayName>
    </types1:Item>
-   <types1:CurrentServerDateTime>2019-10-14T16:29:46.872Z</types1:CurrentServerDateTime>
+   <types1:CurrentServerDateTime>2021-09-23T20:43:55.22Z</types1:CurrentServerDateTime>
 </aetgt:getResponse>
