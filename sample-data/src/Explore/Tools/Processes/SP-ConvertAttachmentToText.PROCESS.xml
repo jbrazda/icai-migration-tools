@@ -7,7 +7,7 @@
       <types1:MimeType>application/xml+process</types1:MimeType>
       <types1:Description>Process converts an Attachment field to text</types1:Description>
       <types1:AppliesTo/>
-      <types1:Tags/>
+      <types1:Tags>,.agent:NA,TEST,for migration,version: 1.0 </types1:Tags>
       <types1:VersionLabel>1.0</types1:VersionLabel>
       <types1:State>CURRENT</types1:State>
       <types1:ProcessGroup/>
@@ -27,7 +27,7 @@
                   name="SP-ConvertAttachmentToText">
             <appliesTo/>
             <description>Process converts an Attachment field to text</description>
-            <tags/>
+            <tags>,.agent:NA,TEST,for migration,version: 1.0 </tags>
             <generator>Informatica Process Designer 11</generator>
             <input>
                <parameter description="Attachment to be converted, attachment must be a text file such .txt, .csv, .xml, .json"
@@ -62,7 +62,9 @@
                </field>
             </output>
             <notes/>
-            <deployment suspendOnFault="false" tracingLevel="verbose">
+            <deployment suspendOnFault="true" tracingLevel="none">
+               <targetLocation xmlns:sfd="http://schemas.active-endpoints.com/appmodules/screenflow/2010/10/avosScreenflow.xsd"
+                               xmlns:rep="http://schemas.active-endpoints.com/appmodules/repository/2010/10/avrepository.xsd">NA</targetLocation>
                <rest/>
             </deployment>
             <flow id="a">

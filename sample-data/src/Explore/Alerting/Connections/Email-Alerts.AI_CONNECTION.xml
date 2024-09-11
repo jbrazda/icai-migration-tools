@@ -7,7 +7,7 @@
       <types1:MimeType>application/xml+connection</types1:MimeType>
       <types1:Description>Shared Email Service to send  alerts and notifications</types1:Description>
       <types1:AppliesTo/>
-      <types1:Tags/>
+      <types1:Tags>TEST,for migration,version: 1.0 </types1:Tags>
       <types1:VersionLabel>1.0</types1:VersionLabel>
       <types1:State>CURRENT</types1:State>
       <types1:ProcessGroup/>
@@ -26,7 +26,7 @@
                      label="Email-Alerts"
                      name="Email-Alerts">
             <description>Shared Email Service to send  alerts and notifications</description>
-            <tags/>
+            <tags>TEST,for migration,version: 1.0 </tags>
             <agent/>
             <attributes>
                <attribute encrypted="false" name="Authentication" value="Enable"/>

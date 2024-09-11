@@ -156,7 +156,8 @@
         -transform.set.process.suspendOnFault,
     	-transform.update.version,
         -transform.remove.tags,
-    	-transform.add.tags"
+    	-transform.add.tags,
+    	-transform.setAllowedConsumers"
         description="Migrate IPD Exported Archive from one environment to another">
     </target>
     
@@ -262,7 +263,6 @@
             depends="-transform.set.process.suspendOnFault.init,-transform.set.process.suspendOnFault.disable,-transform.set.process.suspendOnFault.enable"
             if="${ipd.migrate.processes.tracingLevelUpdate.execute}">
         <echo level="info">Set suspendOnFault Completed</echo>
-
     </target>
     
     <target name="-transform.set.process.suspendOnFault.init">
@@ -389,33 +389,33 @@
     </target>
 	
 	<!-- Add specified tags in IPD designs using ipd.tags.add.tags property -->
-	    <target name="-transform.add.tags" if="${ipd.migrate.addTags}">
-	        <delete dir="${transform.target.dir}"/>
-	        <mkdir dir="${transform.target.dir}"/>
-	        <echo level="info">source: ${transform.source.dir}</echo>
-	        <echo level="info">target: ${transform.target.dir}</echo>
-	        <property name="ipd.tags.add.include" value="**/*.xml"/>
-	        <property name="ipd.tags.add.exclude" value=""/>
-	        <property name="ipd.tags.add.tags" value="${ipd.tags.add.tags}"/>
-	        <echo level="info">include: ${ipd.tags.add.include}</echo>
-	        <echo level="info">exclude: ${ipd.tags.add.exclude}</echo>
-	        <xslt style="${xsl.scripts.base}/add_tags.xsl" 
-	            basedir="${transform.source.dir}"
-	            includes="${ipd.tags.add.include}"
-	            excludes="${ipd.tags.add.exclude}"
-	            extension=".xml"
-	            destdir="${transform.target.dir}"
-	            classpathref="tools.classpath">
-	            <factory name="net.sf.saxon.TransformerFactoryImpl"/>
-	            <param name="tags" expression="${ipd.tags.add.tags}"/>
-	        </xslt>
-	        <copy todir="${transform.source.dir}" overwrite="true" verbose="true">
-	            <fileset dir="${transform.target.dir}"
-	                includes="${ipd.tags.add.include}"
-	                excludes="${ipd.tags.add.exclude}">
-	            </fileset>
-	        </copy>
-	    </target>
+    <target name="-transform.add.tags" if="${ipd.migrate.addTags}">
+        <delete dir="${transform.target.dir}"/>
+        <mkdir dir="${transform.target.dir}"/>
+        <echo level="info">source: ${transform.source.dir}</echo>
+        <echo level="info">target: ${transform.target.dir}</echo>
+        <property name="ipd.tags.add.include" value="**/*.xml"/>
+        <property name="ipd.tags.add.exclude" value=""/>
+        <property name="ipd.tags.add.tags" value="${ipd.tags.add.tags}"/>
+        <echo level="info">include: ${ipd.tags.add.include}</echo>
+        <echo level="info">exclude: ${ipd.tags.add.exclude}</echo>
+        <xslt style="${xsl.scripts.base}/add_tags.xsl" 
+            basedir="${transform.source.dir}"
+            includes="${ipd.tags.add.include}"
+            excludes="${ipd.tags.add.exclude}"
+            extension=".xml"
+            destdir="${transform.target.dir}"
+            classpathref="tools.classpath">
+            <factory name="net.sf.saxon.TransformerFactoryImpl"/>
+            <param name="tags" expression="${ipd.tags.add.tags}"/>
+        </xslt>
+        <copy todir="${transform.source.dir}" overwrite="true" verbose="true">
+            <fileset dir="${transform.target.dir}"
+                includes="${ipd.tags.add.include}"
+                excludes="${ipd.tags.add.exclude}">
+            </fileset>
+        </copy>
+    </target>
 	
     <!-- Removes specified tags in IPD designs using a regular expression, use the ipd.update.version.label
     to override default 1.0 -->
@@ -438,16 +438,45 @@
             </fileset>
         </copy>
     </target>
+	
+    <!-- Sets The Allowed Consumers on the Selected processes-->
+    <target name="-transform.setAllowedConsumers" if="${ipd.migrate.processes.setAllowedConsumers.execute}">
+        <delete dir="${transform.target.dir}"/>
+        <mkdir dir="${transform.target.dir}"/>
+        <echo level="info">source: ${transform.source.dir}</echo>
+        <echo level="info">target: ${transform.target.dir}</echo>
+        <property name="ipd.setAllowedConsumers.include" value="**/*.PROCESS.xml"/>
+        <property name="ipd.setAllowedConsumers.exclude" value=""/>
+        <property name="ipd.process.allowedUsers" value=""/>
+    	<property name="ipd.process.allowedGroups" value=""/>
+        <echo level="info">include: ${ipd.setAllowedConsumers.include}</echo>
+        <echo level="info">exclude: ${ipd.setAllowedConsumers.exclude}</echo>
+        <xslt style="${xsl.scripts.base}/set_service_allowedConsumers.xsl" 
+        	basedir="${transform.source.dir}" 
+        	includes="${ipd.setAllowedConsumers.include}" 
+        	excludes="${ipd.setAllowedConsumers.exclude}" 
+        	extension=".xml" 
+        	destdir="${transform.target.dir}" classpathref="tools.classpath">
+        	
+            <factory name="net.sf.saxon.TransformerFactoryImpl"/>
+            <param name="designVersion" expression="${ipd.update.version.label}"/>
+        </xslt>
+        <copy todir="${transform.source.dir}" overwrite="true" verbose="true">
+            <fileset dir="${transform.target.dir}" includes="${ipd.setAllowedConsumers.include}" excludes="${ipd.setAllowedConsumers.exclude}">
+            </fileset>
+        </copy>
+    	<echo level="info">Set Allowed Consumers Completed</echo>
+    </target>
+
 
 
     <target name="test-move-to-agent" depends="-init,-env.info">
         <property name="transform.source.dir" location="${basedir}/sample-data/src"/>
-        <property name="transform.target.dir" location="${basedir}/target/test-move-to-agent"/>
         <property name="targetLocation" value="TEST_1"/>
-        <mkdir dir="${transform.target.dir}"/>        
+        <mkdir dir="${basedir}/target/test-move-to-agent"/>        
         <xslt style="${xsl.scripts.base}/move_service_to_agent.xsl" 
             basedir="${transform.source.dir}" 
-            destdir="${transform.target.dir}"
+            destdir="${basedir}/target/test-move-to-agent"
             includes="**/*.pd.xml,**/*.PROCESS.xml"
             extension=".xml"
             force="true"
@@ -459,11 +488,10 @@
 
     <target name="test-move-to-cloud" depends="-init">
         <property name="transform.source.dir" location="${basedir}/sample-data/src"/>
-        <property name="transform.target.dir" location="${basedir}/target/test-move-to-cloud"/>
-        <mkdir dir="${transform.target.dir}"/>        
+        <mkdir dir="${basedir}/target/test-move-to-cloud"/>        
         <xslt style="${xsl.scripts.base}/move_service_to_cloud.xsl" 
             basedir="${transform.source.dir}" 
-            destdir="${transform.target.dir}"
+            destdir="${basedir}/target/test-move-to-cloud"
             includes="**/*.pd.xml,**/*.PROCESS.xml"
             extension=".xml"
             force="true"
@@ -474,12 +502,11 @@
 	
 	 <target name="test-update-version" depends="-init">
         <property name="transform.source.dir" location="${basedir}/sample-data/src"/>
-        <property name="transform.target.dir" location="${basedir}/target/update-version"/>
 	 	<delete dir="${transform.target.dir}" />
-        <mkdir dir="${transform.target.dir}"/>        
+        <mkdir dir="${basedir}/target/update-version"/>        
         <xslt style="${xsl.scripts.base}/update_description_version.xsl" 
             basedir="${transform.source.dir}" 
-            destdir="${transform.target.dir}"
+            destdir="${basedir}/target/update-version"
             includes="**/**.xml"
             extension=".xml"
             force="true"
@@ -491,11 +518,10 @@
 	
 	<target name="test-add-tags" depends="-init">
         <property name="transform.source.dir" location="${basedir}/sample-data/src"/>
-        <property name="transform.target.dir" location="${basedir}/target/add-tags"/>
-        <mkdir dir="${transform.target.dir}"/>        
+        <mkdir dir="${basedir}/target/add-tags"/>        
         <xslt style="${xsl.scripts.base}/add_tags.xsl" 
             basedir="${transform.source.dir}" 
-            destdir="${transform.target.dir}"
+            destdir="${basedir}/target/add-tags"
             includes="**/*.xml"
             extension=".xml"
             force="true"
@@ -507,11 +533,10 @@
     
     <target name="test-move-connection-to-agent" depends="-init">
         <property name="transform.source.dir" location="${basedir}/sample-data/src"/>
-        <property name="transform.target.dir" location="${basedir}/target/test-move-to-agent"/>
-        <mkdir dir="${transform.target.dir}"/>        
+        <mkdir dir="${basedir}/target/test-move-connection-to-agent"/>        
         <xslt style="${xsl.scripts.base}/move_connection_to_agent.xsl" 
             basedir="${transform.source.dir}" 
-            destdir="${transform.target.dir}"
+            destdir="${basedir}/target/test-move-connection-to-agent"
             includes="**/*.AI_CONNECTION.xml"
             extension=".xml"
             force="true"
@@ -522,12 +547,11 @@
 
     <target name="test-set-tracingLevel" depends="-init">
         <property name="transform.source.dir" location="${basedir}/sample-data/src"/>
-        <property name="transform.target.dir" location="${basedir}/target/test-set-tracingLevel"/>
         <property name="service.tracingLevel" value="none"/>
-        <mkdir dir="${transform.target.dir}"/>        
+        <mkdir dir="${basedir}/target/test-set-tracingLevel"/>        
         <xslt style="${xsl.scripts.base}/set_service_tracingLevel.xsl" 
             basedir="${transform.source.dir}" 
-            destdir="${transform.target.dir}"
+            destdir="${basedir}/target/test-set-tracingLevel"
             includes="**/*.pd.xml,**/*.PROCESS.xml"
             extension=".xml"
             force="true"
@@ -539,13 +563,11 @@
 
     <target name="test-set-suspendOnFault" depends="-init,-env.info">
         <property name="transform.source.dir" location="${basedir}/sample-data/src"/>
-        <property name="transform.target.dir" location="${basedir}/target/test-set-suspendOnFault"/>
         <property name="service.suspendOnFault" value="true"/>
-
-        <mkdir dir="${transform.target.dir}"/>        
+        <mkdir dir="${basedir}/target/test-set-suspendOnFault"/>        
         <xslt style="${xsl.scripts.base}/set_service_suspendOnFault.xsl" 
             basedir="${transform.source.dir}" 
-            destdir="${transform.target.dir}"
+            destdir="${basedir}/target/test-set-suspendOnFault"
             includes="**/*.pd.xml,**/*.PROCESS.xml"
             extension=".xml"
             force="true"
@@ -554,8 +576,31 @@
             <param name="suspendOnFault" expression="${service.suspendOnFault}"/>
         </xslt>
     </target>
+	
+	<target name="test-set-allowedConsumers" depends="-init">
+        <property name="transform.source.dir" location="${basedir}/sample-data/src"/>
+		<property name="service.allowedGroups" value="testYser@acme.com,test2@acme.com"/>
+		<property name="service.allowedUsers" value="IICS_Developers,Service Account"/>
+        <mkdir dir="${basedir}/target/test-set-allowedConsumers"/>        
+        <xslt style="${xsl.scripts.base}/set_service_allowedConsumers.xsl" 
+            basedir="${transform.source.dir}" 
+            destdir="${basedir}/target/test-set-allowedConsumers"
+            includes="**/*.PROCESS.xml"
+            extension=".xml"
+            force="true"
+            classpathref="tools.classpath">
+            <factory name="net.sf.saxon.TransformerFactoryImpl"/>
+        	<param name="allowedGroups" expression="${service.allowedGroups}"/>
+        	<param name="allowedUsers" expression="${service.allowedUsers}"/>
+        </xslt>
+    </target>
 
-    <target name="test_transform">
+	<target name="test_all" depends="-init,test-add-tags,test-move-connection-to-agent,test-move-to-agent,test-move-to-cloud,test-set-allowedConsumers,test-set-suspendOnFault,test-set-tracingLevel,test-update-version">
+            
+    </target>
+
+	
+	<target name="test_transform">
         <property 
             name="iics.release" 
             value="test_transfrom_all"/>
@@ -614,6 +659,37 @@
         <attribute name="sourceDir"/>
         <attribute name="targetDir"/>
         <attribute name="suspendOnFault" default="true"/>
+        <attribute name="includes"/>
+        <attribute name="excludes"/>
+        <sequential>
+            <property file="${basedir}/lib/ant/migration.properties"/>
+            <path id="tools.classpath">
+                <fileset dir="${tools.lib}">
+                    <include name="*.jar"/>
+                </fileset>
+            </path>
+            <echo level="info">****** sourceDir:    @{sourceDir}</echo>
+            <echo level="info">****** targetDir:    @{targetDir}</echo>
+            <echo level="info">****** includes:     @{includes}</echo>
+            <echo level="info">****** excludes:     @{excludes}</echo>
+            <echo level="info">****** suspendOnFault: @{suspendOnFault}</echo>         
+            <xslt style="${xsl.scripts.base}/set_service_suspendOnFault.xsl" 
+                basedir="@{sourceDir}" 
+                destdir="@{targetDir}"
+                includes="@{includes}"
+                excludes="@{excludes}"
+                extension=".xml"
+                force="true"
+                classpathref="tools.classpath">
+                <param name="suspendOnFault" expression="@{suspendOnFault}"/>
+            </xslt>
+        </sequential>
+    </macrodef>
+	
+	<macrodef name="setAllowedGroups">
+        <attribute name="sourceDir"/>
+        <attribute name="targetDir"/>
+        <attribute name="allowedGroups" default="true"/>
         <attribute name="includes"/>
         <attribute name="excludes"/>
         <sequential>

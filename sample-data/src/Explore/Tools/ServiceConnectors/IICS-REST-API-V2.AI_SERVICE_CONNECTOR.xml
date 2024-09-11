@@ -7,7 +7,7 @@
       <types1:MimeType>application/xml+businesssconnector</types1:MimeType>
       <types1:Description>The REST API version 2 resources in this section apply to multiple services in Informatica Intelligent Cloud Services. This connector is complementary ti IICS Built-in connector it ads functionality not impleented in Built in ICS API connector</types1:Description>
       <types1:AppliesTo/>
-      <types1:Tags/>
+      <types1:Tags>TEST,for migration,version: 1.0 </types1:Tags>
       <types1:VersionLabel>1.0</types1:VersionLabel>
       <types1:State>CURRENT</types1:State>
       <types1:ProcessGroup/>
@@ -29,7 +29,7 @@
                             name="IICS-REST-API-V2"
                             uuid="1bed3004-01f4-45c4-9fa4-a5868eb4cd71">
             <description>The REST API version 2 resources in this section apply to multiple services in Informatica Intelligent Cloud Services. This connector is complementary ti IICS Built-in connector it ads functionality not impleented in Built in ICS API connector</description>
-            <tags/>
+            <tags>TEST,for migration,version: 1.0 </tags>
             <connectionAttributes xmlns="http://schemas.informatica.com/appmodules/screenflow/2014/04/avosConnectors.xsd"/>
             <actions>
                <action category=""

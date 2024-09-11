@@ -6,7 +6,7 @@
       <types1:MimeType>application/xml+processobject</types1:MimeType>
       <types1:Description>Condition Group for Alert level - Are evaluated in following order error, warning, error OR logical operator is used to  evaluate groups of conditions if any group returns true than the level is selected</types1:Description>
       <types1:AppliesTo/>
-      <types1:Tags/>
+      <types1:Tags>TEST,for migration,version: 1.0 </types1:Tags>
       <types1:VersionLabel>1.0</types1:VersionLabel>
       <types1:State>CURRENT</types1:State>
       <types1:ProcessGroup/>
@@ -21,7 +21,7 @@
                         isByCopy="true"
                         name="rules">
             <description>Condition Group for Alert level - Are evaluated in following order error, warning, error OR logical operator is used to  evaluate groups of conditions if any group returns true than the level is selected</description>
-            <tags/>
+            <tags>TEST,for migration,version: 1.0 </tags>
             <detail>
                <field label="rule" name="rule" type="objectlist">
                   <options>

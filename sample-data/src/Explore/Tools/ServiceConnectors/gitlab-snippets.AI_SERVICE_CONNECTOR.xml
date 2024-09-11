@@ -8,7 +8,7 @@
       <types1:Description>Provides Support to store  and retrieve configurations or other files as gitlab Snippets
 See https://gitlab.com/help/api/README.md</types1:Description>
       <types1:AppliesTo/>
-      <types1:Tags/>
+      <types1:Tags>TEST,for migration,version: 1.0 </types1:Tags>
       <types1:VersionLabel>1.0</types1:VersionLabel>
       <types1:State>CURRENT</types1:State>
       <types1:ProcessGroup/>
@@ -31,7 +31,7 @@ See https://gitlab.com/help/api/README.md</types1:Description>
                             uuid="7cf5fdba-abb9-48d4-b6d1-e2481c1eddbd">
             <description>Provides Support to store  and retrieve configurations or other files as gitlab Snippets
 See https://gitlab.com/help/api/README.md</description>
-            <tags/>
+            <tags>TEST,for migration,version: 1.0 </tags>
             <connectionAttributes xmlns="http://schemas.informatica.com/appmodules/screenflow/2014/04/avosConnectors.xsd">
                <connectionAttribute description="Gitlab API Base URL (example: https://gitlab.example.com/api)"
                                     masked="false"

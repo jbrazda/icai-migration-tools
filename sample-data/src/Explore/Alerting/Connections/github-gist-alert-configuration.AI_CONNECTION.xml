@@ -7,7 +7,7 @@
       <types1:MimeType>application/xml+connection</types1:MimeType>
       <types1:Description>Github Gist API connection to manage Alert Service Configurations</types1:Description>
       <types1:AppliesTo/>
-      <types1:Tags/>
+      <types1:Tags>,.agent:NA,TEST,for migration,version: 1.0 </types1:Tags>
       <types1:VersionLabel>1.0</types1:VersionLabel>
       <types1:State>CURRENT</types1:State>
       <types1:ProcessGroup/>
@@ -26,8 +26,8 @@
                      label="github-gist-alert-configuration"
                      name="github-gist-alert-configuration">
             <description>Github Gist API connection to manage Alert Service Configurations</description>
-            <tags/>
-            <agent/>
+            <tags>,.agent:NA,TEST,for migration,version: 1.0 </tags>
+            <agent>NA</agent>
             <attributes>
                <attribute encrypted="false" name="base_uri" value="https://api.github.com"/>
                <attribute encrypted="true" name="access_token" value=""/>

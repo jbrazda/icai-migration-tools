@@ -7,7 +7,7 @@
       <types1:MimeType>application/xml+process</types1:MimeType>
       <types1:Description>Process Monitors Secure Agents Health and Reports Issues</types1:Description>
       <types1:AppliesTo/>
-      <types1:Tags/>
+      <types1:Tags>,.agent:NA,TEST,for migration,version: 1.0 </types1:Tags>
       <types1:VersionLabel>1.0</types1:VersionLabel>
       <types1:State>CURRENT</types1:State>
       <types1:ProcessGroup/>
@@ -30,7 +30,7 @@
             <parameterSet xmlns="http://schemas.active-endpoints.com/appmodules/screenflow/2021/04/taskflowModel.xsd"/>
             <appliesTo/>
             <description>Process Monitors Secure Agents Health and Reports Issues</description>
-            <tags/>
+            <tags>,.agent:NA,TEST,for migration,version: 1.0 </tags>
             <generator>Informatica Process Designer 11</generator>
             <input>
                <parameter description=""
@@ -93,7 +93,9 @@
                </field>
             </tempFields>
             <notes/>
-            <deployment suspendOnFault="false" tracingLevel="verbose">
+            <deployment suspendOnFault="true" tracingLevel="none">
+               <targetLocation xmlns:sfd="http://schemas.active-endpoints.com/appmodules/screenflow/2010/10/avosScreenflow.xsd"
+                               xmlns:rep="http://schemas.active-endpoints.com/appmodules/repository/2010/10/avrepository.xsd">NA</targetLocation>
                <rest/>
             </deployment>
             <flow id="a">

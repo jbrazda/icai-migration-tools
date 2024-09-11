@@ -10,7 +10,7 @@ see https://developer.github.com/v3/gists/
 
 This connector is useful to store and retrive configurations, templates, snippets, etc</types1:Description>
       <types1:AppliesTo/>
-      <types1:Tags/>
+      <types1:Tags>TEST,for migration,version: 1.0 </types1:Tags>
       <types1:VersionLabel>1.0</types1:VersionLabel>
       <types1:State>CURRENT</types1:State>
       <types1:ProcessGroup/>
@@ -35,7 +35,7 @@ This connector is useful to store and retrive configurations, templates, snippet
 see https://developer.github.com/v3/gists/
 
 This connector is useful to store and retrive configurations, templates, snippets, etc</description>
-            <tags/>
+            <tags>TEST,for migration,version: 1.0 </tags>
             <connectionAttributes xmlns="http://schemas.informatica.com/appmodules/screenflow/2014/04/avosConnectors.xsd">
                <connectionAttribute description="Base URI of the REST endpoint&#xA;should be https://api.github.com"
                                     masked="false"

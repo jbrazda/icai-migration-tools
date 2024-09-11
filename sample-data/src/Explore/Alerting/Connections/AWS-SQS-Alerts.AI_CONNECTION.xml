@@ -6,7 +6,7 @@
       <types1:MimeType>application/xml+connection</types1:MimeType>
       <types1:Description/>
       <types1:AppliesTo/>
-      <types1:Tags>.agent:NA</types1:Tags>
+      <types1:Tags>.agent:NA,TEST,for migration,version: 1.0 </types1:Tags>
       <types1:VersionLabel>1.0</types1:VersionLabel>
       <types1:State>CURRENT</types1:State>
       <types1:ProcessGroup/>
@@ -21,7 +21,7 @@
                      label="AWS-SQS-Alerts"
                      name="AWS-SQS-Alerts">
             <description/>
-            <tags>.agent:NA</tags>
+            <tags>.agent:NA,TEST,for migration,version: 1.0 </tags>
             <agent>NA</agent>
             <attributes>
                <attribute encrypted="false" name="accessKey" value="AKIAYEDZMZOGIT5F674M"/>

@@ -20,7 +20,7 @@
 
     
     <!-- Update Object and metadata Descriptions with Version information -->
-    <xsl:template match="rep:Description|sfd:description|con:connection/con:description|bcm:businessConnector/bcm:description">
+    <xsl:template match="rep:Description|rep:Entry/*/sfd:description|con:connection/con:description|bcm:businessConnector/bcm:description">
         <xsl:copy>
             <xsl:choose> 
                 <xsl:when test="empty(./text())"> 
@@ -29,8 +29,8 @@
                 <xsl:when test="exists(../rep:Entry/po:processObject)"> 
                     <xsl:value-of select="string-join((normalize-space(replace(./text(),'&#10;',' ')),'version:',$designVersion),' ')"/>
                 </xsl:when>
-                <xsl:when test="matches(./text(),'(.*)(version):? *(\d+)(\.\d+)*(.*)( )?(.*)?')"> 
-                    <xsl:value-of select="concat(normalize-space(replace(./text(),'(.*)(version):? *(\d+)(\.\d+)*( )?(.*)?','$1$6')),'&#10;version: ',$designVersion)"/> 
+                <xsl:when test="matches(./text(),'(.*)(version|Version):? *(\d+)(\.\d+)*(.*)( )?(.*)?')"> 
+                    <xsl:value-of select="concat(normalize-space(replace(./text(),'(.*)(version|Version):? *(\d+)(\.\d+)*( )?(.*)?','$1$6')),'&#10;version: ',$designVersion)"/> 
                 </xsl:when> 
                 <xsl:otherwise> 
                     <xsl:value-of select="concat(./text(),'&#10;version: ',$designVersion)"/> 
