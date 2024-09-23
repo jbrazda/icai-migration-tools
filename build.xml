@@ -172,6 +172,10 @@
         <echo level="info">Target dir:    ${transform.target.dir}</echo>
     </target>
     
+	<target name="clean.target" depends="-init">
+		<delete dir="${basedir}/target" verbose="true">
+		</delete>
+	</target>
 
   
     <target name="-transform.processes.to.agent" if="${ipd.migrate.processes.to.agent.enabled}">
@@ -451,7 +455,7 @@
     	<property name="ipd.process.allowedGroups" value=""/>
         <echo level="info">include: ${ipd.setAllowedConsumers.include}</echo>
         <echo level="info">exclude: ${ipd.setAllowedConsumers.exclude}</echo>
-        <xslt style="${xsl.scripts.base}/set_service_allowedConsumers.xsl" 
+        <xslt style="${xsl.scripts.base}/set_service_allowedConsumers_mapped.xsl" 
         	basedir="${transform.source.dir}" 
         	includes="${ipd.setAllowedConsumers.include}" 
         	excludes="${ipd.setAllowedConsumers.exclude}" 
@@ -459,17 +463,17 @@
         	destdir="${transform.target.dir}" classpathref="tools.classpath">
         	
             <factory name="net.sf.saxon.TransformerFactoryImpl"/>
-            <param name="designVersion" expression="${ipd.update.version.label}"/>
+            <param name="groupMap" expression="${ipd.process.allowedGroupsMap}"/>
+        	<param name="usersMap" expression="${ipd.process.allowedUsersMap}"/>
         </xslt>
         <copy todir="${transform.source.dir}" overwrite="true" verbose="true">
             <fileset dir="${transform.target.dir}" includes="${ipd.setAllowedConsumers.include}" excludes="${ipd.setAllowedConsumers.exclude}">
             </fileset>
         </copy>
-    	<echo level="info">Set Allowed Consumers Completed</echo>
     </target>
 
-
-
+    <!-- TESTS -->
+	
     <target name="test-move-to-agent" depends="-init,-env.info">
         <property name="transform.source.dir" location="${basedir}/sample-data/src"/>
         <property name="targetLocation" value="TEST_1"/>
@@ -484,6 +488,7 @@
             <factory name="net.sf.saxon.TransformerFactoryImpl"/>
             <param name="targetLocation" expression="${targetLocation}"/>
         </xslt>
+    	<echo level="info">TEST - Move To Agent Completed</echo>
     </target>
 
     <target name="test-move-to-cloud" depends="-init">
@@ -498,15 +503,16 @@
             classpathref="tools.classpath">
             <factory name="net.sf.saxon.TransformerFactoryImpl"/>
         </xslt>
+    	<echo level="info">TEST - Move To Cloud Completed</echo>
     </target>
 	
 	 <target name="test-update-version" depends="-init">
         <property name="transform.source.dir" location="${basedir}/sample-data/src"/>
 	 	<delete dir="${transform.target.dir}" />
-        <mkdir dir="${basedir}/target/update-version"/>        
+        <mkdir dir="${basedir}/target/test-update-version"/>        
         <xslt style="${xsl.scripts.base}/update_description_version.xsl" 
             basedir="${transform.source.dir}" 
-            destdir="${basedir}/target/update-version"
+            destdir="${basedir}/target/test-update-version"
             includes="**/**.xml"
             extension=".xml"
             force="true"
@@ -514,21 +520,22 @@
             <factory name="net.sf.saxon.TransformerFactoryImpl"/>
         	<param name="designVersion" expression="2.0"/>
         </xslt>
+	 	<echo level="info">TEST - Update Version Completed</echo>
     </target>
 	
 	<target name="test-add-tags" depends="-init">
         <property name="transform.source.dir" location="${basedir}/sample-data/src"/>
-        <mkdir dir="${basedir}/target/add-tags"/>        
+        <mkdir dir="${basedir}/target/test-add-tags"/>        
         <xslt style="${xsl.scripts.base}/add_tags.xsl" 
             basedir="${transform.source.dir}" 
-            destdir="${basedir}/target/add-tags"
+            destdir="${basedir}/target/test-add-tags"
             includes="**/*.xml"
             extension=".xml"
             force="true"
             classpathref="tools.classpath">
             <factory name="net.sf.saxon.TransformerFactoryImpl"/>
-
         </xslt>
+		<echo level="info">TEST - Add Tags Completed</echo>
     </target>
     
     <target name="test-move-connection-to-agent" depends="-init">
@@ -543,6 +550,7 @@
             classpathref="tools.classpath">
             <factory name="net.sf.saxon.TransformerFactoryImpl"/>
         </xslt>
+    	<echo level="info">TEST - Move Connection to Agent Completed</echo>
     </target>
 
     <target name="test-set-tracingLevel" depends="-init">
@@ -559,6 +567,7 @@
             <factory name="net.sf.saxon.TransformerFactoryImpl"/>
             <param name="tracingLevel" expression="${service.tracingLevel}"/>
         </xslt>
+    	<echo level="info">TEST - Set Tracing Level Completed</echo>
     </target>
 
     <target name="test-set-suspendOnFault" depends="-init,-env.info">
@@ -575,12 +584,13 @@
             <factory name="net.sf.saxon.TransformerFactoryImpl"/>
             <param name="suspendOnFault" expression="${service.suspendOnFault}"/>
         </xslt>
+    	<echo level="info">TEST - Set Suspend on Fault Completed</echo>
     </target>
 	
 	<target name="test-set-allowedConsumers" depends="-init">
         <property name="transform.source.dir" location="${basedir}/sample-data/src"/>
-		<property name="service.allowedGroups" value="testYser@acme.com,test2@acme.com"/>
-		<property name="service.allowedUsers" value="IICS_Developers,Service Account"/>
+		<property name="service.allowedGroups" value="IICS_Developers,Service Account"/>
+		<property name="service.allowedUsers" value="TestUser1@acme.com,TestUser2@acme.com"/>
         <mkdir dir="${basedir}/target/test-set-allowedConsumers"/>        
         <xslt style="${xsl.scripts.base}/set_service_allowedConsumers.xsl" 
             basedir="${transform.source.dir}" 
@@ -593,13 +603,38 @@
         	<param name="allowedGroups" expression="${service.allowedGroups}"/>
         	<param name="allowedUsers" expression="${service.allowedUsers}"/>
         </xslt>
+		<echo level="info">TEST - Set Allowed Consumers Completed</echo>
     </target>
-
-	<target name="test_all" depends="-init,test-add-tags,test-move-connection-to-agent,test-move-to-agent,test-move-to-cloud,test-set-allowedConsumers,test-set-suspendOnFault,test-set-tracingLevel,test-update-version">
-            
-    </target>
-
 	
+	<target name="test-set-allowedConsumers-mapped" depends="-init">
+	        <property name="transform.source.dir" location="${basedir}/sample-data/src"/>
+			<property name="service.allowedGroups" value="IICS_Developers,Service Account"/>
+			<property name="service.allowedUsers" value="TestUser1@acme.com,TestUser2@acme.com"/>
+	        <mkdir dir="${basedir}/target/test-set-allowedConsumers"/>        
+	        <xslt style="${xsl.scripts.base}/set_service_allowedConsumers_mapped.xsl" 
+	            basedir="${transform.source.dir}" 
+	            destdir="${basedir}/target/test-set-allowedConsumers"
+	            includes="**/*.PROCESS.xml"
+	            extension=".xml"
+	            force="true"
+	            classpathref="tools.classpath">
+	            <factory name="net.sf.saxon.TransformerFactoryImpl"/>
+	        </xslt>
+			<echo level="info">TEST - Set Allowed Consumers Completed</echo>
+	    </target>
+
+	<target name="test_all" depends="-init
+		,clean.target
+		,test-add-tags
+		,test-move-connection-to-agent
+		,test-move-to-agent
+		,test-move-to-cloud
+		,test-set-allowedConsumers-mapped
+		,test-set-suspendOnFault
+		,test-set-tracingLevel
+		,test-update-version">            
+    </target>
+
 	<target name="test_transform">
         <property 
             name="iics.release" 

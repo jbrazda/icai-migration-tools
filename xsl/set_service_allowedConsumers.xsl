@@ -6,7 +6,7 @@
 	version="2.0">
 	<xsl:output method="xml" indent="yes"  omit-xml-declaration="yes" />
 	<!-- Allowed Groups can be a comma separated List 
-	This Styklesheet sets the Allowed Consumer in the process Service Definitions  such as
+	This XSLT sets the Allowed Consumer in the process Service Definitions  such as
 	
 		<deployment suspendOnFault="false" tracingLevel="none">
            <targetLocation>CAI</targetLocation>
@@ -55,11 +55,13 @@
                 </sfd:rest>
             </xsl:if>
         </xsl:copy>
+        <base-uri><xsl:value-of select="base-uri()"/></base-uri>
 	</xsl:template>
 	
     <xsl:template match="sfd:rest">
         <xsl:copy>
-            <xsl:apply-templates select="@*|node()[not(local-name(.) = ('allowedGroups','allowedUsers'))]"/>
+            <!-- copy only elements other than allowedGroups allowedGroups  these to be replaced by the groups provided in parameters -->
+            <xsl:apply-templates select="@*|node()[not(local-name(.) = ('allowedGroups','allowedGroups'))]"/>
 	        <sfd:allowedGroups>
                 <xsl:for-each select="tokenize($allowedGroups, ',')">
                     <sfd:group>

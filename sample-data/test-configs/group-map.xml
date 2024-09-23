@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GroupMap>
+	<Group Name="Administrator">
+		<process>SecureAgentMonitor</process>
+		<process>UncaughtFaultAlertHandler-G01</process>
+		<process>SCH-SecureAgentMonitor</process>
+	</Group>
+	<Group Name="Sevice Account">
+		<process>SecureAgentMonitor</process>
+		<process>UncaughtFaultAlertHandler-G01</process>
+		<process>SCH-SecureAgentMonitor</process>
+	</Group>
+	<Group Name="Sevice Account">
+		<process>UncaughtFaultAlertHandler-Cloud</process>
+	</Group>
+</GroupMap>
