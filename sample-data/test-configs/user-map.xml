@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Map>
-	<User Name="test_user_1@acme.com">
-		<process>SecureAgentMonitor</process>
-		<process>UncaughtFaultAlertHandler-G01</process>
-		<process>SCH-SecureAgentMonitor</process>
-	</User>
-	<User Name="test_user_2@acme.com">
-		<process>SecureAgentMonitor</process>
-		<process>UncaughtFaultAlertHandler-G01</process>
-		<process>SCH-SecureAgentMonitor</process>
-	</User>
-	<User Name="test_user_2@acme.com">
-		<process>UncaughtFaultAlertHandler-Cloud</process>
-	</User>
+    <User Name="test_user_1@acme.com">
+        <process>SecureAgentMonitor</process>
+        <process>UncaughtFaultAlertHandler-G01</process>
+        <process>SCH-SecureAgentMonitor</process>
+    </User>
+    <User Name="test_user_2@acme.com">
+        <process>SecureAgentMonitor</process>
+        <process>UncaughtFaultAlertHandler-G01</process>
+        <process>SCH-SecureAgentMonitor</process>
+    </User>
+    <User Name="test_user_2@acme.com">
+        <process>UncaughtFaultAlertHandler-Cloud</process>
+    </User>
 </Map>

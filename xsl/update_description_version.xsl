@@ -17,8 +17,6 @@
         </xsl:copy>
     </xsl:template>
     
-
-    
     <!-- Update Object and metadata Descriptions with Version information -->
     <xsl:template match="rep:Description|rep:Entry/*/sfd:description|con:connection/con:description|bcm:businessConnector/bcm:description">
         <xsl:copy>

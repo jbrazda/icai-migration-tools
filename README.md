@@ -4,23 +4,30 @@
 
 - [Informatica IICS-CAI Migration Tools](#informatica-iics-cai-migration-tools)
   - [Main Ant Script](#main-ant-script)
-    - [Example Transformation Configuration](#example-transformation-configuration)
-    - [Invoking transform from Main Build Script of Your IICS component Build](#invoking-transform-from-main-build-script-of-your-iics-component-build)
-      - [Key properties to drive invocation of transform Target](#key-properties-to-drive-invocation-of-transform-target)
-      - [Example Target Implementation in Main Build](#example-target-implementation-in-main-build)
+  - [Example Transformation Configuration](#example-transformation-configuration)
+  - [Invoking transform from Main Build Script of Your IICS component Build](#invoking-transform-from-main-build-script-of-your-iics-component-build)
+    - [Key properties to drive invocation of transform Target](#key-properties-to-drive-invocation-of-transform-target)
+    - [Example Target Implementation in Main Build](#example-target-implementation-in-main-build)
   - [Set Process Suspend On Fault Deployment Attributes](#set-process-suspend-on-fault-deployment-attributes)
-    - [Suspend On Fault XSLT](#suspend-on-fault-xslt)
+  - [Suspend On Fault XSLT](#suspend-on-fault-xslt)
     - [Parameters](#parameters)
     - [Example use in Ant](#example-use-in-ant)
   - [Set Process Tracing Level Attribute](#set-process-tracing-level-attribute)
     - [XSLT Set Tracing Level](#xslt-set-tracing-level)
     - [Parameters](#parameters-1)
-  - [Example use in Ant](#example-use-in-ant-1)
+    - [Example use in Ant](#example-use-in-ant-1)
   - [Setting Run On Parameter of the Process](#setting-run-on-parameter-of-the-process)
-    - [Move Process to different agent or group](#move-process-to-different-agent-or-group)
+  - [Move Process to different agent or group](#move-process-to-different-agent-or-group)
     - [Example Use in Ant](#example-use-in-ant-2)
-    - [Move Process from Secure Agent or agent deployment group to Cloud](#move-process-from-secure-agent-or-agent-deployment-group-to-cloud)
+  - [Move Process from Secure Agent or agent deployment group to Cloud](#move-process-from-secure-agent-or-agent-deployment-group-to-cloud)
     - [Example Use in Ant](#example-use-in-ant-3)
+  - [Sort Connectors Transformation](#sort-connectors-transformation)
+    - [Example Allowed Groups Mapping File](#example-allowed-groups-mapping-file)
+  - [Set Allowed Groups on  Process Designs](#set-allowed-groups-on--process-designs)
+    - [Parameters](#parameters-2)
+    - [Example Allowed Groups Mapping File](#example-allowed-groups-mapping-file-1)
+    - [Example Allowed Users Mapping File](#example-allowed-users-mapping-file)
+    - [Example Use in Ant](#example-use-in-ant-4)
   - [Licenses anf Credits](#licenses-anf-credits)
 
 <!-- /TOC -->
@@ -55,18 +62,17 @@ The transformation process relies on Externally provided properties or property 
 enable/disable individual transformation steps and configure which designs should undergo specific
 transformation and what will be transformation parameters.
 
-### Example Transformation Configuration
+## Example Transformation Configuration
 
 transformation property file should have an extension `transform.properties` as the script can prompt for list of
 pre configured transformation properties when the file property is not set. Follow example naming convention in
 the form of `PackageName_customer_environment.transform.properties` i.e. `AlertServices_iclab_dev.transform.properties`
 
 ```properties
-
 # MOVE Process to Cloud
 # ---------------------
 # Set this property to Enable/Disable Transform Step
-ipd.migrate.processes.to.cloud.enabled=false
+ipd.migrate.processes.to.cloud.enabled=true
 # use this property to include specific processes or use Ant pattern expressions.
 # migrate.processObjects.enabled=true is set
 ipd.migrate.processes.to.cloud.include=*.PROCESS.xml
@@ -79,28 +85,27 @@ ipd.migrate.processes.to.cloud.exclude=*-1.PROCESS.xml
 # Set this property to Enable/Disable Transform Step
 ipd.migrate.processes.to.agent.enabled=true
 # specify target Agent Name or Agent Group Name to Migrate to
-ipd.migrate.processes.to.agent.name=DEMO
+ipd.migrate.processes.to.agent.name=NA
 # Use this property to include specific processes or use Ant pattern expressions.
 # This property is required when migrate.processObjects.enabled=true is set
 # ipd.migrate.processes.to.agent.include=Explore/Tools/Processes/SP-Shell-CMD.PROCESS.xml
-ipd.migrate.processes.to.agent.include=**/*NA.PROCESS.xml
-# you can exclude specified files from
-ipd.migrate.processes.to.agent.exclude=**/SCH-*.PROCESS.xml
+ipd.migrate.processes.to.agent.include=**/*.PROCESS.xml
+# you can exclude specified files from 
+ipd.migrate.processes.to.agent.exclude=SCH-*.PROCESS.xml
+
 
 # MOVE Connections to Agent
 # -----------------------
 # Set this property to Enable/Disable Transform Step
-ipd.migrate.connections.to.agent.enabled=false
+ipd.migrate.connections.to.agent.enabled=true
 # specify target Agent Name or Agent Group Name to Migrate to
-ipd.migrate.connections.to.agent.name=G01
-# Use this property to include specific connections or use Ant pattern expressions. **/*.AI_CONNECTION.xml
-ipd.migrate.connections.to.agent.include=Explore/Logging/Connections/IPaaS-Logging.AI_CONNECTION.xml\
-,Explore/Logging/Connections/SA-Process-DB.AI_CONNECTION.xml\
-,Explore/Tools/Connections/Email.AI_CONNECTION.xml\
-,Explore/Tools/Connections/AgentFileWriter.AI_CONNECTION.xml\
-,Explore/Tools/Connections/IPaaS-Configuration-DB.AI_CONNECTION.xml
+ipd.migrate.connections.to.agent.name=NA
+# Use this property to include specific connections or use Ant pattern expressions.
+# This property is required when migrate.processObjects.enabled=true is set
+# ipd.migrate.processes.to.agent.include=Explore/Tools/Processes/SP-Shell-CMD.PROCESS.xml
+ipd.migrate.connections.to.agent.include=**/*.AI_CONNECTION.xml
 # you can exclude specified files from 
-ipd.migrate.connections.to.agent.exclude=Explore/Tools/Connections/github-gist.AI_CONNECTION.xml
+ipd.migrate.connections.to.agent.exclude=**/Email-Alerts.AI_CONNECTION.xml
 
 # SET Process Tracing Levels
 # -----------------------
@@ -112,10 +117,10 @@ ipd.migrate.processes.tracingLevelUpdate.enabled=true
 # ipd.migrate.processes.tracingLevelUpdate.levels=none,terse,normal,verbose
 # note that each supported tracing level must have incudes/excludes defined
 # Following example setting will set  all processes tracing level to None
-ipd.migrate.processes.tracingLevelUpdate.levels=verbose
+ipd.migrate.processes.tracingLevelUpdate.levels=none
 
 # Includes Excludes for each level
-# Use this property to include specific processes to get their Logging levels updated
+# Use this property to include specific processes to get their Logging levels updated 
 # Use relative path reference starting from $basedir or use Ant pattern expressions.
 # This property is required when migrate.processObjects.enabled=true is set
 
@@ -128,26 +133,41 @@ ipd.migrate.processes.tracingLevelUpdate.terse.excludes=**/*.xml
 ipd.migrate.processes.tracingLevelUpdate.normal.includes=nothing
 ipd.migrate.processes.tracingLevelUpdate.normal.excludes=**/*.xml
 
-ipd.migrate.processes.tracingLevelUpdate.verbose.includes=**/*.PROCESS.xml
-ipd.migrate.processes.tracingLevelUpdate.verbose.excludes=nothing
+ipd.migrate.processes.tracingLevelUpdate.verbose.includes=nothing
+ipd.migrate.processes.tracingLevelUpdate.verbose.excludes=**/*.xml
 
 
 # SET Process Suspend On fault
 # -----------------------
 # Set this property to Enable/Disable Transform Step
-ipd.migrate.processes.tracingLevelUpdate.execute=false
+ipd.migrate.processes.tracingLevelUpdate.execute=true
 
-#includes/excludes for processes to enable suspendOnFault
+# includes/excludes for processes to enable suspendOnFault
 ipd.migrate.processes.suspendOnFault.true.execute=true
 ipd.migrate.processes.suspendOnFault.true.includes=**/*.PROCESS.xml
 ipd.migrate.processes.suspendOnFault.true.excludes=
-
-#includes/excludes for processes to disable suspendOnFault
+ 
+# includes/excludes for processes to disable suspendOnFault
 ipd.migrate.processes.suspendOnFault.false.execute=true
 ipd.migrate.processes.suspendOnFault.false.includes=none
 ipd.migrate.processes.suspendOnFault.false.excludes=**/*.PROCESS.xml
 
-#remove Specific tags based on pattern
+
+
+# SET Allowed Consumers
+# -----------------------
+# Set this property to Enable/Disable Transform Step
+# includes/excludes for processes to set Allowed Consumers
+ipd.migrate.processes.setAllowedConsumers.execute=true
+ipd.migrate.processes.setAllowedConsumers.includes=**/*.PROCESS.xml
+ipd.migrate.processes.setAllowedConsumers.excludes=none
+
+ipd.process.allowedUsersMap=../sample-data/test-configs/user-map.xml
+ipd.process.allowedGroupsMap=../sample-data/test-configs/group-map.xml
+
+# SET Tags
+# -----------------------
+# remove Specific tags based on pattern
 ipd.migrate.removeTags=false
 ipd.tags.remove.include=**/*.xml
 ipd.tags.remove.exclude=
@@ -168,13 +188,20 @@ ipd.update.version.exclude=**/**.xml
 # you can exclude specified files from 
 ipd.update.version.label=1.0
 
+
+# Sort Connectors
+# -----------------------
+ipd.migrate.processes.sortConnectors.execute=true
+ipd.sortConnectors.include=**/*.AI_SERVICE_CONNECTOR.xml
+ipd.sortConnectors.exclude=
+
 ```
 
-### Invoking transform from Main Build Script of Your IICS component Build
+## Invoking transform from Main Build Script of Your IICS component Build
 
 Following is an example snippet how this transformation can be called from main Build Script.
 
-#### Key properties to drive invocation of transform Target
+### Key properties to drive invocation of transform Target
 
 | Property                      | Description                                                                                     | Example Value                                     |
 |-------------------------------|-------------------------------------------------------------------------------------------------|---------------------------------------------------|
@@ -184,7 +211,7 @@ Following is an example snippet how this transformation can be called from main 
 | migration.properties.base     | Path to directory where Transformation Configuration files are stored, used in interactive mode | `/users/jbrazda/iics`                             |
 | iics.package.transform.config | Path to Selected Transformation Properties file                                                 | `AlertServices_PennyMac_dev.transform.properties` |
 
-#### Example Target Implementation in Main Build
+### Example Target Implementation in Main Build
 
 ```xml
 <target name="iics.prepare.package"
@@ -218,7 +245,7 @@ they might be set to suspend on Fault which allows longer time to inspect them f
 failure or take corrective actions manually and resume process to running state.
 Successful resuming might also need elevated [persistence level][persistence_level].  
 
-### Suspend On Fault XSLT
+## Suspend On Fault XSLT
 
 [xsl/set_service_suspendOnFault.xsl](xsl/set_service_suspendOnFault.xsl)
 
@@ -274,7 +301,7 @@ The Tracing Level of a process implemented using Process Designer couples the [P
 
 [xsl/set_service_tracingLevel.xsl](xsl/set_service_tracingLevel.xsl)
 
-## Example use in Ant
+### Example use in Ant
 
 ```xml
 <target name="test-set-tracingLevel" depends="-init">
@@ -304,7 +331,7 @@ that you run the process on the same agent that the connector runs on.
 
 This Tool provides two targets to manage `Run On` Parameter:
 
-### Move Process to different agent or group
+## Move Process to different agent or group
 
 | Parameter      | Values                           |
 |----------------|----------------------------------|
@@ -333,7 +360,7 @@ This Tool provides two targets to manage `Run On` Parameter:
 </target>
 ```
 
-### Move Process from Secure Agent or agent deployment group to Cloud
+## Move Process from Secure Agent or agent deployment group to Cloud
 
 XSLT - This Script does not have parameters
 
@@ -355,6 +382,109 @@ XSLT - This Script does not have parameters
         classpathref="tools.classpath">
         <factory name="net.sf.saxon.TransformerFactoryImpl"/>
     </xslt>
+</target>
+```
+
+## Sort Connectors Transformation
+
+This script allows to sort Connectors. This is very useful to make connectors easier to maintain and make more consistent as IICS Connector editor does not support sorting of Actions, Process Objects and their attributes alphabetically which make it difficult to work with large connectors.
+
+### Example Allowed Groups Mapping File
+
+```xml
+<target name="test-sort-connectors" depends="-init">
+    <property name="transform.source.dir" location="${basedir}/sample-data/src"/>
+    <mkdir dir="${basedir}/target/test-sortConnectors"/>        
+    <xslt style="${xsl.scripts.base}/sort-connector-design.xsl" 
+        basedir="${transform.source.dir}" 
+        destdir="${basedir}/target/test-sortConnectors"
+        includes="**/*.AI_SERVICE_CONNECTOR.xml"
+        extension=".xml"
+        force="true"
+        classpathref="tools.classpath">
+        <factory name="net.sf.saxon.TransformerFactoryImpl"/>
+    </xslt>
+    <echo level="info">TEST - Sort Connectors Completed</echo>
+</target>
+```
+
+## Set Allowed Groups on  Process Designs
+
+This Transform script allows setting of the allowed groups and allowed groups of the Process, this can be used to update such attributes in bulk during a build process.
+
+This script is using a custom mapping files to map `allowedGroups` and `allowedUsers` attributes of the Process. These attributes control permissions to invoke the process
+
+### Parameters
+
+| Parameter | Values                           |
+| --------- | -------------------------------- |
+| groupMap  | Groups Mapping file location URI |
+| usersMap  | Users Mapping file location URI  |
+
+### Example Allowed Groups Mapping File
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<Map>
+    <Group Name="Administrator">
+        <process>SecureAgentMonitor</process>
+        <process>UncaughtFaultAlertHandler-G01</process>
+        <process>SCH-SecureAgentMonitor</process>
+    </Group>
+    <Group Name="Service Account">
+        <process>SecureAgentMonitor</process>
+        <process>UncaughtFaultAlertHandler-G01</process>
+        <process>SCH-SecureAgentMonitor</process>
+    </Group>
+    <Group Name="Sevice Consumer">
+        <process>UncaughtFaultAlertHandler-Cloud</process>
+    </Group>
+</Map>
+```
+
+### Example Allowed Users Mapping File
+
+> Note: You should generally prefer to use only groups as the user ids typically differ and are too granular for setting access to services.
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<Map>
+    <User Name="test_user_1@acme.com">
+        <process>SecureAgentMonitor</process>
+        <process>UncaughtFaultAlertHandler-G01</process>
+        <process>SCH-SecureAgentMonitor</process>
+    </User>
+    <User Name="test_user_2@acme.com">
+        <process>SecureAgentMonitor</process>
+        <process>UncaughtFaultAlertHandler-G01</process>
+        <process>SCH-SecureAgentMonitor</process>
+    </User>
+    <User Name="test_user_2@acme.com">
+        <process>UncaughtFaultAlertHandler-Cloud</process>
+    </User>
+</Map>
+```
+
+### Example Use in Ant
+
+```xml
+<target name="test-set-allowedConsumers-mapped" depends="-init">
+    <property name="transform.source.dir" location="${basedir}/sample-data/src"/>
+    <property name="service.allowedGroupsMap" value="file:/C:/Users/NCVJ9B/git/github/icai-migration-tools/sample-data/test-configs/group-map.xml"/>
+    <property name="service.allowedUsersMap" value="file:/C:/Users/NCVJ9B/git/github/icai-migration-tools/sample-data/test-configs/user-map.xml"/>
+    <mkdir dir="${basedir}/target/test-set-allowedConsumers"/>        
+    <xslt style="${xsl.scripts.base}/set_service_allowedConsumers_mapped.xsl" 
+        basedir="${transform.source.dir}" 
+        destdir="${basedir}/target/test-set-allowedConsumers"
+        includes="**/*.PROCESS.xml"
+        extension=".xml"
+        force="true"
+        classpathref="tools.classpath">
+        <factory name="net.sf.saxon.TransformerFactoryImpl"/>
+        <param name="groupMap" expression="${service.allowedGroupsMap}"/>
+        <param name="usersMap" expression="${service.allowedUsersMap}"/>
+    </xslt>
+    <echo level="info">TEST - Set Allowed Consumers Completed</echo>
 </target>
 ```
 
