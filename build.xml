@@ -640,8 +640,8 @@
     
     <target name="test-set-allowedConsumers-mapped" depends="-init">
         <property name="transform.source.dir" location="${basedir}/sample-data/src"/>
-        <property name="service.allowedGroupsMap" value="file:/C:/Users/NCVJ9B/git/github/icai-migration-tools/sample-data/test-configs/group-map.xml"/>
-        <property name="service.allowedUsersMap" value="file:/C:/Users/NCVJ9B/git/github/icai-migration-tools/sample-data/test-configs/user-map.xml"/>
+        <property name="service.allowedGroupsMap" value="../sample-data/test-configs/group-map.xml"/>
+        <property name="service.allowedUsersMap" value="../sample-data/test-configs/user-map.xml"/>
         <mkdir dir="${basedir}/target/test-set-allowedConsumers"/>        
         <xslt style="${xsl.scripts.base}/set_service_allowedConsumers_mapped.xsl" 
             basedir="${transform.source.dir}" 
